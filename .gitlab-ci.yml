@@ -1,0 +1,4 @@
+include:
+  - project: "ci/repos-ci/olympus_nap_auto_archive_log_service"
+    ref: master
+    file: "gitlab-ci.yml"
