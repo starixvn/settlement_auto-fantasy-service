@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Sources\DirectPayout.Fantasy.Service\DirectFantasy.Services.csproj" />
+    <ProjectReference Include="..\..\Sources\DirectFantasy.Services\DirectFantasy.Services.csproj" />
   </ItemGroup>
 
 </Project>

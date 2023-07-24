@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DirectPayout.Fantasy.Service\DirectFantasy.Services.csproj" />
+    <ProjectReference Include="..\DirectFantasy.Services\DirectFantasy.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
