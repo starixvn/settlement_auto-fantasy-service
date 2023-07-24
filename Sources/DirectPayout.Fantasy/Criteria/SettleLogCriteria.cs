@@ -1,4 +1,4 @@
-﻿using AutoPayout.Constants;
+﻿using DirectFantasy.Core.Constants;
 using Fanex.Data;
 using Fanex.Data.Repository;
 

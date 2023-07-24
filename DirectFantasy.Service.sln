@@ -7,11 +7,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{2663
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{649AA4C2-A57F-4A8B-A34C-B8980B22CBA4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectPayout.Fantasy.UnitTests", "Tests\DirectPayout.Fantasy.UnitTests\DirectPayout.Fantasy.UnitTests.csproj", "{05193207-05C4-43CF-8B29-ADCC1E28E7EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectFantasy.UnitTests", "Tests\DirectPayout.Fantasy.UnitTests\DirectFantasy.UnitTests.csproj", "{05193207-05C4-43CF-8B29-ADCC1E28E7EA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectPayout.Fantasy", "Sources\DirectPayout.Fantasy\DirectPayout.Fantasy.csproj", "{772D8C1B-B37F-40CA-BAF1-65C510BA0738}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectFantasy.Core", "Sources\DirectPayout.Fantasy\DirectFantasy.Core.csproj", "{772D8C1B-B37F-40CA-BAF1-65C510BA0738}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectPayout.Fantasy.Service", "Sources\DirectPayout.Fantasy.Service\DirectPayout.Fantasy.Service.csproj", "{0ED07E69-0E8B-4AF6-AA03-6CD2A47BE7E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectFantasy.Services", "Sources\DirectPayout.Fantasy.Service\DirectFantasy.Services.csproj", "{0ED07E69-0E8B-4AF6-AA03-6CD2A47BE7E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectFantasy.WorkerService", "Sources\DirectFantasy.WorkerService\DirectFantasy.WorkerService.csproj", "{6024B1EF-FEB8-43EB-9A4F-8652F01CC6DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,10 @@ Global
 		{0ED07E69-0E8B-4AF6-AA03-6CD2A47BE7E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0ED07E69-0E8B-4AF6-AA03-6CD2A47BE7E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0ED07E69-0E8B-4AF6-AA03-6CD2A47BE7E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6024B1EF-FEB8-43EB-9A4F-8652F01CC6DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6024B1EF-FEB8-43EB-9A4F-8652F01CC6DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6024B1EF-FEB8-43EB-9A4F-8652F01CC6DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6024B1EF-FEB8-43EB-9A4F-8652F01CC6DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{05193207-05C4-43CF-8B29-ADCC1E28E7EA} = {649AA4C2-A57F-4A8B-A34C-B8980B22CBA4}
 		{772D8C1B-B37F-40CA-BAF1-65C510BA0738} = {266359BF-8D44-43F5-8449-079ECC685A9B}
 		{0ED07E69-0E8B-4AF6-AA03-6CD2A47BE7E0} = {266359BF-8D44-43F5-8449-079ECC685A9B}
+		{6024B1EF-FEB8-43EB-9A4F-8652F01CC6DE} = {266359BF-8D44-43F5-8449-079ECC685A9B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8AA0DE63-C3C7-4605-95B3-00566047592D}

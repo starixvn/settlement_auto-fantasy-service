@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Sources\DirectPayout.Fantasy\DirectPayout.Fantasy.csproj" />
+    <ProjectReference Include="..\..\Sources\DirectPayout.Fantasy.Service\DirectFantasy.Services.csproj" />
   </ItemGroup>
 
 </Project>

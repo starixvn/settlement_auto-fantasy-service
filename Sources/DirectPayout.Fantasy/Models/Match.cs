@@ -1,6 +1,6 @@
-﻿using AutoPayout.Constants;
+﻿using DirectFantasy.Core.Constants;
 
-namespace DirectPayout.Fantasy.Models;
+namespace DirectFantasy.Core.Models;
 
 public class Match
 {
@@ -21,4 +21,7 @@ public class Match
     public int TypeId { get; set; } = SettleType.FullTime;
 
     public int LeagueId { get; set; }
+    public bool IsChecking { get; set; }
+
+    public bool IsRefund => Action.Equals(SettleAction.Refund);
 }

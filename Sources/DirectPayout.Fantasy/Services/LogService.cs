@@ -1,15 +1,15 @@
-﻿using AutoPayout.Criteria;
+﻿using DirectFantasy.Core.Criteria;
+using DirectFantasy.Core.Models;
 using DirectPayout.Fantasy.Criteria;
-using DirectPayout.Fantasy.Models;
 using Fanex.Data.Repository;
 
-namespace DirectPayout.Fantasy.Services;
+namespace DirectFantasy.Core.Services;
 
 public interface LogService
 {
     Task Write(Match match, string message);
 
-    void WriteDirectly(Match match, string message);
+    void WriteDirectly(int matchId, string message);
 }
 
 public class LogServiceImp : LogService
@@ -37,29 +37,21 @@ public class LogServiceImp : LogService
         await repository.ExecuteAsync(criteria);
     }
 
-    public void WriteDirectly(Match match, string message)
+    public void WriteDirectly(int matchId, string message)
     {
         try
         {
             var criteria = new LogDirectlyCriteria
             {
-                Extend = match.MatchId,
-                Doing = GenerateLogData(match)
+                Extend = matchId,
+                Doing = message
             };
 
             repository.Execute(criteria);
         }
         catch (Exception e)
         {
-            Fanex.Logging.LogService.Error("DirectPayout.Fantasy (Write Log Directly): ", e);
+            Fanex.Logging.LogService.Error("DirectFantasy (Write Log Directly): ", e);
         }
-    }
-
-    private static string GenerateLogData(Match match)
-    {
-        var score = $"score: {match.FinalHomeScore ?? 0}-{match.FinalAwayScore ?? 0} HT: {match.HtHomeScore ?? 0}-{match.HtAwayScore ?? 0}";
-        var message = $"NAP: Auto Direct Calculate({match.Action}) for matchid: {match.MatchId} {score}";
-
-        return message;
     }
 }

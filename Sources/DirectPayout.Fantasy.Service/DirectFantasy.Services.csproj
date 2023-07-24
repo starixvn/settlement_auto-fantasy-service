@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DirectPayout.Fantasy\DirectFantasy.Core.csproj" />
+  </ItemGroup>
+
 </Project>

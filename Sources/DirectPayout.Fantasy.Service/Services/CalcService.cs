@@ -1,62 +1,41 @@
 ﻿using AutoMapper;
-using AutoPayout.Constants;
-using AutoPayout.Criteria;
-using AutoPayout.Models;
+using DirectFantasy.Core.Constants;
+using DirectFantasy.Core.Models;
+using DirectFantasy.Core.Services;
+using DirectFantasy.Services.Criteria;
 using Fanex.Data.Repository;
-using Fanex.Settlement.ScaleOut.Constants;
 using Fanex.Settlement.ScaleOut.Request;
 using Fanex.Settlement.ScaleOut.Services;
 using Microsoft.Extensions.Options;
-using Match = DirectPayout.Fantasy.Models.Match;
-using SettleType = AutoPayout.Constants.SettleType;
 
 namespace DirectPayout.Fantasy.Services;
 
-public interface SettleService
+public interface CalcService
 {
-    Task<Result> VerifyMatch(Match match);
-
     Task Settle(Match match);
 
     Task InsertAutoPayoutResult(Match match, int sourceId, int statusId);
 }
 
-public class SettleServiceImp : SettleService
+public class CalcServiceImp : CalcService
 {
     private readonly ScaleOutSettleService scaleOutService;
     private readonly IDynamicRepository repository;
     private readonly IMapper mapper;
+    private readonly LogService logService;
     private readonly AppSettingsKey appSettingsKey;
 
-    public SettleServiceImp(ScaleOutSettleService scaleOutService,
+    public CalcServiceImp(ScaleOutSettleService scaleOutService,
         IDynamicRepository repository,
         IMapper mapper,
-        IOptions<AppSettingsKey> appSettingsKey)
+        IOptions<AppSettingsKey> appSettingsKey,
+        LogService logService)
     {
         this.scaleOutService = scaleOutService;
         this.repository = repository;
         this.mapper = mapper;
         this.appSettingsKey = appSettingsKey.Value;
-    }
-
-    public async Task<Result> VerifyMatch(Match match)
-    {
-        var eventTicketRequest = new EventTicketRequest
-        {
-            MatchId = match.MatchId,
-            Mode = match.TypeId == SettleType.Halftime ? Mode.HalfTime : Mode.FullTime,
-            Action = match.Action,
-            IsAuto = true,
-            SpName = "NAP_Admin_Settlement_1_AutoPayout_Push",
-        };
-
-        var result = await scaleOutService.ValidateEventAndTicket(eventTicketRequest);
-
-        return new()
-        {
-            ErrCode = result.ErrorCode,
-            ErrMsg = result.ErrorMessage,
-        };
+        this.logService = logService;
     }
 
     public async Task Settle(Match match)
@@ -77,6 +56,8 @@ public class SettleServiceImp : SettleService
         };
 
         await UpdateMatchInfo(settleCriteria);
+
+        WriteLogDirectly(match);
 
         ExecuteAllSiteDb(settleCriteria);
     }
@@ -100,7 +81,7 @@ public class SettleServiceImp : SettleService
 
     private async Task UpdateMatchInfo(MatchSettleCriteria criteria)
     {
-        var updateMatchInfoRequest = mapper.Map<MatchSettleCriteria, UpdateMatchInfoRequest>(criteria);
+        var updateMatchInfoRequest = mapper.Map<UpdateMatchInfoRequest>(criteria);
         updateMatchInfoRequest.IsAuto = true;
 
         await scaleOutService.UpdateMatchInfo(updateMatchInfoRequest);
@@ -113,5 +94,13 @@ public class SettleServiceImp : SettleService
             criteria.DbServer = server;
             repository.Execute(criteria);
         }
+    }
+
+    private void WriteLogDirectly(Match match)
+    {
+        var score = $"score: {match.FinalHomeScore ?? 0}-{match.FinalAwayScore ?? 0} HT: {match.HtHomeScore ?? 0}-{match.HtAwayScore ?? 0}";
+        var message = $"NAP: Auto Direct Calculate({match.Action}) for matchid: {match.MatchId} {score}";
+
+        logService.WriteDirectly(match.MatchId, message);
     }
 }

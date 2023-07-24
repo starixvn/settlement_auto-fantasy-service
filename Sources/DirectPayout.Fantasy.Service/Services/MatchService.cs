@@ -1,21 +1,24 @@
-﻿using AutoPayout.Constants;
-using AutoPayout.Models;
-using DirectPayout.Fantasy.Criteria;
+﻿using DirectFantasy.Core.Constants;
+using DirectFantasy.Core.Models;
+using DirectFantasy.Services.Criteria;
 using Fanex.Caching;
 using Fanex.Data.Repository;
 using Microsoft.Extensions.Options;
-using Match = DirectPayout.Fantasy.Models.Match;
 
-namespace DirectPayout.Fantasy.Services;
+namespace DirectFantasy.Services.Services;
 
-public interface FantasyMatchService
+public interface MatchService
 {
     Task<List<Match>> PeekNewMatch();
 
     void Remove(Match match);
+
+    Task UpdateMatchRemark(Match match, string remark, int statusId);
+
+    void RemoveAndUpdateStatus(Match match, int statusId);
 }
 
-public class FantasyMatchServiceImp : FantasyMatchService
+public class MatchServiceImp : MatchService
 {
     private readonly object matchesLock = new();
 
@@ -27,11 +30,31 @@ public class FantasyMatchServiceImp : FantasyMatchService
 
     private readonly AppSettingsKey appSettingsKey;
 
-    public FantasyMatchServiceImp(IDynamicRepository repository, ICache cache, IOptions<AppSettingsKey> appSettingsKey)
+    public MatchServiceImp(IDynamicRepository repository, ICache cache, IOptions<AppSettingsKey> appSettingsKey)
     {
         this.repository = repository;
         this.cache = cache;
         this.appSettingsKey = appSettingsKey.Value;
+    }
+
+    public void RemoveAndUpdateStatus(Match match, int statusId)
+    {
+        lock (matchesLock)
+        {
+            Remove(match);
+            UpdateMatchStatus(match, statusId);
+        }
+    }
+
+    public async Task UpdateMatchStatus(Match match, int statusId)
+    {
+        var criteria = new UpdateStatusCriteria
+        {
+            MatchId = match.MatchId,
+            TypeId = match.TypeId,
+            StatusId = statusId
+        };
+        await repository.ExecuteAsync(criteria);
     }
 
     public void Remove(Match match)
@@ -53,6 +76,18 @@ public class FantasyMatchServiceImp : FantasyMatchService
 
             return newMatches;
         }
+    }
+
+    public async Task UpdateMatchRemark(Match match, string remark, int statusId)
+    {
+        var criteria = new UpdateStatusCriteria
+        {
+            MatchId = match.MatchId,
+            TypeId = match.TypeId,
+            Remark = remark,
+            StatusId = statusId
+        };
+        await repository.ExecuteAsync(criteria);
     }
 
     private async Task<List<Match>> GetMatchesByLeagues()

@@ -1,6 +1,6 @@
 ﻿using Fanex.Data.Repository;
 
-namespace DirectPayout.Fantasy.Criteria;
+namespace DirectFantasy.Services.Criteria;
 
 public class GetFantasyMatchesCriteria : CriteriaBase
 {
