@@ -1,9 +1,11 @@
-﻿using DirectFantasy.Core.Constants;
+﻿using AutoMapper;
+using DirectFantasy.Core.Constants;
 using DirectFantasy.Core.Exceptions;
 using DirectFantasy.Core.Models;
 using DirectFantasy.Services.Criteria;
 using DirectFantasy.Services.Models;
 using Fanex.Data.Repository;
+using Fanex.Settlement.ScaleOut.Criteria.Normal;
 using Fanex.Settlement.ScaleOut.Request;
 using Fanex.Settlement.ScaleOut.Services;
 using Microsoft.Extensions.Options;
@@ -14,25 +16,28 @@ public interface ValidationMatchService
 {
     Task ValidateTicketMatch(Match match);
 
-    Task<Result> ValidateEventAndTicket(Match match);
+    Task<Result> ValidateTicket(Match match);
 }
 
 public class ValidationMatchServiceImp : ValidationMatchService
 {
     private readonly AppSettingsKey appSettingsKey;
     private readonly IDynamicRepository repository;
-    private readonly ScaleOutSettleService scaleOutSettleService;
+    private readonly IMapper mapper;
+    private readonly GeneralService generalService;
 
     public ValidationMatchServiceImp(IOptions<AppSettingsKey> appSettingsKey,
         IDynamicRepository repository,
-        ScaleOutSettleService scaleOutSettleService)
+        IMapper mapper,
+        GeneralService generalService)
     {
         this.appSettingsKey = appSettingsKey.Value;
         this.repository = repository;
-        this.scaleOutSettleService = scaleOutSettleService;
+        this.mapper = mapper;
+        this.generalService = generalService;
     }
 
-    public async Task<Result> ValidateEventAndTicket(Match match)
+    public async Task<Result> ValidateTicket(Match match)
     {
         var request = new EventTicketRequest
         {
@@ -43,7 +48,8 @@ public class ValidationMatchServiceImp : ValidationMatchService
             IsAutoRefund = match.IsRefund
         };
 
-        var resultMessage = await scaleOutSettleService.ValidateEventAndTicket(request);
+        var criteria = mapper.Map<EventTicketRequest, ValidateTicketCriteria>(request);
+        var resultMessage = await generalService.ExecuteAsync(criteria);
 
         return new Result
         {
@@ -71,7 +77,7 @@ public class ValidationMatchServiceImp : ValidationMatchService
             var criteria = new MatchTicketInfoCriteria
             {
                 MatchId = match.MatchId,
-                TypeId = match.TypeId,
+                TypeId = 1, // Single
                 DbServer = server
             };
 

@@ -1,5 +1,4 @@
 ﻿using DirectFantasy.Services.Services;
-using DirectPayout.Fantasy.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DirectFantasy.Services;

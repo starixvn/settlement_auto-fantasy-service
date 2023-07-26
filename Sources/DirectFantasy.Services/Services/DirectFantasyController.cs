@@ -1,6 +1,4 @@
-﻿using DirectPayout.Fantasy.Services;
-
-namespace DirectFantasy.Services.Services;
+﻿namespace DirectFantasy.Services.Services;
 
 public interface DirectFantasyController
 {
@@ -20,7 +18,10 @@ public class DirectFantasyControllerImp : DirectFantasyController
 
     public async Task ProcessAsync()
     {
-        var newMatches = await matchService.PeekNewMatch();
+        var newMatches = (await matchService.PeekNewMatch())
+            .Where(n => !n.IsChecking)
+            .ToList();
+
         newMatches.ForEach(m =>
         {
             Task.Run(() => matchSettlementHandler.Progress(m))

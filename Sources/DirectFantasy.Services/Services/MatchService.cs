@@ -16,6 +16,8 @@ public interface MatchService
     Task UpdateMatchRemark(Match match, string remark, int statusId);
 
     void RemoveAndUpdateStatus(Match match, int statusId);
+
+    public void UpdateMatchStatus(Match match, int statusId);
 }
 
 public class MatchServiceImp : MatchService
@@ -46,7 +48,7 @@ public class MatchServiceImp : MatchService
         }
     }
 
-    public async Task UpdateMatchStatus(Match match, int statusId)
+    public void UpdateMatchStatus(Match match, int statusId)
     {
         var criteria = new UpdateStatusCriteria
         {
@@ -54,7 +56,7 @@ public class MatchServiceImp : MatchService
             TypeId = match.TypeId,
             StatusId = statusId
         };
-        await repository.ExecuteAsync(criteria);
+        repository.Execute(criteria);
     }
 
     public void Remove(Match match)
@@ -98,8 +100,8 @@ public class MatchServiceImp : MatchService
 
         return appSettingsKey.EnvironmentName switch
         {
-            "PRO" => leagueId > 0 ? fantasyMatches.Where(x => x.LeagueId != leagueId).ToList() : fantasyMatches,
-            "UAT" => fantasyMatches.Where(x => x.LeagueId == leagueId).ToList(),
+            Env.Pro => leagueId > 0 ? fantasyMatches.Where(x => x.LeagueId != leagueId).ToList() : fantasyMatches,
+            Env.Uat => fantasyMatches.Where(x => x.LeagueId == leagueId).ToList(),
             _ => fantasyMatches
         };
     }

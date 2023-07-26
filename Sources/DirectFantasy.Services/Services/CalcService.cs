@@ -8,7 +8,7 @@ using Fanex.Settlement.ScaleOut.Request;
 using Fanex.Settlement.ScaleOut.Services;
 using Microsoft.Extensions.Options;
 
-namespace DirectPayout.Fantasy.Services;
+namespace DirectFantasy.Services.Services;
 
 public interface CalcService
 {

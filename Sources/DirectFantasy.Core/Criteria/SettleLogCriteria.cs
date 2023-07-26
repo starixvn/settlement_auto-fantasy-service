@@ -2,7 +2,7 @@
 using Fanex.Data;
 using Fanex.Data.Repository;
 
-namespace DirectPayout.Fantasy.Criteria;
+namespace DirectFantasy.Core.Criteria;
 
 #nullable disable
 

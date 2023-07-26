@@ -1,6 +1,5 @@
 ﻿using DirectFantasy.Core.Criteria;
 using DirectFantasy.Core.Models;
-using DirectPayout.Fantasy.Criteria;
 using Fanex.Data.Repository;
 
 namespace DirectFantasy.Core.Services;
