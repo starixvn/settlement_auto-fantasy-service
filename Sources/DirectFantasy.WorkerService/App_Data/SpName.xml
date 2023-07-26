@@ -6,10 +6,10 @@
 		<Setting Key="NAP_Set_AutoPayout_ScheduleSel" SpName="NAP_Set_AutoPayout_ScheduleSel" DbName="DBPRO.bodb02.bodbAdminNet" />
 		<Setting Key="NAP_Set_AutoPayout_ResultDetailByMatchIdSel" SpName="NAP_Set_AutoPayout_ResultDetailByMatchIdSel" DbName="DBPRO.bodb02.bodbAdminNet" />
 		<Setting Key="NAP_Set_AutoPayoutResultIns" SpName="NAP_Set_AutoPayoutResultIns" DbName="DBPRO.bodb02.bodbAdminNet" />
-		<Setting Key="NAP_Admin_Settlement_Validation_Event" SpName="NAP_Admin_Settlement_Validation_Event_xtest" DbName="DBPRO.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_Admin_Settlement_Validation_Event" SpName="NAP_Admin_Settlement_Validation_Event" DbName="DBPRO.bodb02.bodbAdminNet" />
 		<Setting Key="NAP_Set_SettlementStatusUpd" SpName="NAP_Set_SettlementStatusUpd" DbName="DBPRO.bodb02.bodbAdminNet" />
 		<Setting Key="NAP_Admin_MatchInfoUpd" SpName="NAP_Admin_MatchInfoUpd" DbName="DBPRO.bodb02.bodbAdminNet" />
-		<Setting Key="NAP_Set_AutoRefund_ResultIns" SpName="NAP_Set_AutoRefund_ResultIns_xtest" DbName="DBPRO.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_Set_AutoRefund_ResultIns" SpName="NAP_Set_AutoRefund_ResultIns" DbName="DBPRO.bodb02.bodbAdminNet" />
 		<Setting Key="NAP_UserLog_WriteLogPreSettlement" SpName="NAP_UserLog_WriteLogPreSettlement" DbName="DBUserLog.LogTDB.bodbAdminNet" />
 		<Setting Key="WriteLog_UserLog_Settle" SpName="WriteLog_UserLog_Settle" DbName="DBLOG.bodb_CustomerLog.bodbAdminNet" TimeOut="20" />
 	</Function>
@@ -40,7 +40,7 @@
 		</Function>
 
 		<Function Name="DirectPayout Fantasy">
-			<Setting Key="NAP_Set_AutoPayout_Fantasy_ScheduleSel" SpName="NAP_Set_AutoPayout_Fantasy_ScheduleSel_xtest" DbName="DBPRO.bodb02.bodbAdminNet" />
+			<Setting Key="NAP_Set_AutoPayout_Fantasy_ScheduleSel" SpName="NAP_Set_AutoPayout_Fantasy_ScheduleSel" DbName="DBPRO.bodb02.bodbAdminNet" />
 		</Function>
 	</Function>
 </Functions>
