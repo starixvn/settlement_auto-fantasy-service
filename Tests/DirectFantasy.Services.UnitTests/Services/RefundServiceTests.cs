@@ -1,0 +1,94 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
+using DirectFantasy.Core.Constants;
+using DirectFantasy.Core.Models;
+using DirectFantasy.Core.Services;
+using DirectFantasy.Services.Criteria;
+using DirectFantasy.Services.Services;
+using Fanex.Data.Repository;
+using Fanex.Settlement.ScaleOut.Request;
+using Fanex.Settlement.ScaleOut.Services;
+using Microsoft.Extensions.Options;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using NSubstitute;
+
+namespace DirectFantasy.Services.UnitTests.Services;
+
+public class RefundServiceTests
+{
+    private readonly IDynamicRepository repository;
+    private readonly ScaleOutSettleService scaleOutSettleService;
+    private readonly LogService logService;
+    private readonly RefundServiceImp refundService;
+
+    public RefundServiceTests()
+    {
+        repository = Substitute.For<IDynamicRepository>();
+        scaleOutSettleService = Substitute.For<ScaleOutSettleService>();
+        logService = Substitute.For<LogService>();
+
+        var settings = new AppSettingsKey()
+        {
+            RetryInterval = 1000,
+            RetryCount = 1,
+            EnvironmentName = "Local",
+            SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
+        };
+        var appSettingsKey = Options.Create(settings);
+
+        refundService = new RefundServiceImp(repository, scaleOutSettleService, appSettingsKey, logService);
+    }
+
+    [Fact]
+    public async Task InsertRefundResult_ValidMatch_InvokeExecuteAsync()
+    {
+        // Arrange
+        var match = new Match
+        {
+            MatchId = 1,
+            TypeId = 2
+        };
+
+        var criteria = new RefundResultInsertCriteria
+        {
+            ParentId = match.MatchId,
+            TypeId = match.TypeId,
+        };
+
+        // Act
+        await refundService.InsertRefundResult(match);
+
+        // Assert
+        await repository.Received().ExecuteAsync(
+            Arg.Is<RefundResultInsertCriteria>(param
+                => param.ParentId == criteria.ParentId && param.TypeId == criteria.TypeId));
+    }
+
+    [Fact]
+    public async Task HandleRefundPush_ValidMatch_InvokeActions()
+    {
+        // Arrange
+        var match = new Match
+        {
+            MatchId = 1,
+            TypeId = 2
+        };
+
+        // Act
+        await refundService.HandleRefundPush(match);
+
+        // Assert
+        await scaleOutSettleService.Received(1).UpdateUnderSettlementFlag(match.MatchId, 0, match.Action);
+
+        await scaleOutSettleService.Received(1).UpdateMatchInfo(Arg.Any<UpdateMatchInfoRequest>());
+
+        logService.Received(1).WriteDirectly(Arg.Is<int>(x => x == match.MatchId), Arg.Any<string>());
+
+        repository.Received(3).Execute(Arg.Any<RefundPushCriteria>());
+    }
+}
