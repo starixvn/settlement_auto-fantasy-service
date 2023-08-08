@@ -77,7 +77,6 @@ public class ValidationMatchServiceImp : ValidationMatchService
             var criteria = new MatchTicketInfoCriteria
             {
                 MatchId = match.MatchId,
-                TypeId = 1, // Single
                 DbServer = server
             };
 

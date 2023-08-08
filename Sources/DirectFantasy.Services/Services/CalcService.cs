@@ -98,8 +98,8 @@ public class CalcServiceImp : CalcService
 
     private void WriteLogDirectly(Match match)
     {
-        var score = $"score: {match.FinalHomeScore ?? 0}-{match.FinalAwayScore ?? 0} HT: {match.HtHomeScore ?? 0}-{match.HtAwayScore ?? 0}";
-        var message = $"NAP: Auto Direct Calculate({match.Action}) for matchid: {match.MatchId} {score}";
+        var score = $"Score: {match.FinalHomeScore ?? 0}-{match.FinalAwayScore ?? 0} HT: {match.HtHomeScore ?? 0}-{match.HtAwayScore ?? 0}";
+        var message = $"NAP: Auto Direct Calculate({match.Action}) for matchId: {match.MatchId} {score}";
 
         logService.WriteDirectly(match.MatchId, message);
     }

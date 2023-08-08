@@ -72,7 +72,7 @@ public class MatchSettlementHandlerImp : MatchSettlementHandler
         catch (MarkedTicketException exception)
         {
             await logService.Write(match, exception.Description);
-            matchService.UpdateMatchStatus(match, MatchStatus.Failed);
+            await matchService.UpdateMatchStatus(match, MatchStatus.Failed);
         }
         finally
         {

@@ -7,7 +7,7 @@ public class MatchTicketInfoCriteria : NonQueryCommand
 {
     public int MatchId { get; set; }
 
-    public int TypeId { get; set; }
+    public int TypeId { get; } = 1;
 
     [SpParam(Ignored = true)]
     public string DbServer { get; set; }

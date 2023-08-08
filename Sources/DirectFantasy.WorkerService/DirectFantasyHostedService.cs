@@ -9,6 +9,7 @@ public class DirectFantasyHostedService : IHostedService
     private readonly DirectFantasyController directFantasyController;
 
     private readonly IConfiguration configuration;
+
     private readonly IMaintenanceService maintenanceService;
 
     private bool running;
@@ -59,7 +60,7 @@ public class DirectFantasyHostedService : IHostedService
         }
         catch (Exception exception)
         {
-            LogService.Error("Fanex.DirectFantasy.Service: ", exception);
+            LogService.Error("Error from Auto Direct Fantasy Service: ", exception);
         }
     }
 

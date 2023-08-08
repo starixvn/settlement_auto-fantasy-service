@@ -21,32 +21,33 @@ namespace DirectFantasy.WorkerService
         public static void AutoPayoutConfigServices(this IServiceCollection service, IConfiguration configuration)
         {
             service.AddAutoMapperConfig();
-
-            service.AddSingleton(new UMClientConfiguration().Initialize(configuration));
-            service.AddSingleton<IUMCacheService, UMCacheService>();
-            service.AddSingleton<IUMRestClient, UMRestClient>();
-            service.AddSingleton<ONEbook.UM.Services.IMaintenanceService, ONEbook.UM.Services.MaintenanceService>();
-
-            service.AddRedisConfig(configuration);
-        }
-
-        private static void AddRedisConfig(this IServiceCollection service, IConfiguration configuration)
-        {
-            var redisHost = configuration.GetSection("Redis.Server").Value;
-            var redisPort = configuration.GetSection("Redis.Port").Value;
-            var redisPassword = configuration.GetSection("Redis.Password").Value;
-            var redisDatabase = configuration.GetSection("Redis.DefaultDatabase").Value;
-            service.AddSingleton<ICache>(new RedisCache(new RedisCacheOptions
-            {
-                ConnectionString = $"{redisHost}:{redisPort},password={redisPassword},defaultDatabase={redisDatabase}",
-                ApplicationName = configuration.GetSection("Redis.ApplicationName").Value,
-            }));
+            service.AddUm(configuration);
+            service.AddRedis(configuration);
 
             StartUmSetting(configuration);
             StartDataBaseSetting(configuration);
             StartLogSetting(configuration);
+        }
 
-            service.AddSingleton<ICacheService>(new CacheService());
+        private static void AddUm(this IServiceCollection service, IConfiguration configuration)
+        {
+            service.AddSingleton(new UMClientConfiguration().Initialize(configuration));
+            service.AddSingleton<IUMCacheService, UMCacheService>();
+            service.AddSingleton<IUMRestClient, UMRestClient>();
+            service.AddSingleton<ONEbook.UM.Services.IMaintenanceService, ONEbook.UM.Services.MaintenanceService>();
+        }
+
+        private static void AddRedis(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = configuration.GetValue<string>("Redis:ConnectionString");
+            var applicationName = configuration.GetValue<string>("Redis:ApplicationName");
+
+            services.AddSingleton<ICache>(new RedisCache(new RedisCacheOptions
+            {
+                ConnectionString = connectionString,
+                ApplicationName = applicationName,
+            }));
+            services.AddSingleton<ICacheService>(new CacheService());
         }
 
         private static void AddAutoMapperConfig(this IServiceCollection service)

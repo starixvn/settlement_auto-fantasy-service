@@ -4,6 +4,7 @@ using DirectFantasy.Services.Criteria;
 using Fanex.Caching;
 using Fanex.Data.Repository;
 using Microsoft.Extensions.Options;
+using Environment = DirectFantasy.Core.Constants.Environment;
 
 namespace DirectFantasy.Services.Services;
 
@@ -15,9 +16,7 @@ public interface MatchService
 
     Task UpdateMatchRemark(Match match, string remark, int statusId);
 
-    void RemoveAndUpdateStatus(Match match, int statusId);
-
-    public void UpdateMatchStatus(Match match, int statusId);
+    Task UpdateMatchStatus(Match match, int statusId);
 }
 
 public class MatchServiceImp : MatchService
@@ -39,16 +38,7 @@ public class MatchServiceImp : MatchService
         this.appSettingsKey = appSettingsKey.Value;
     }
 
-    public void RemoveAndUpdateStatus(Match match, int statusId)
-    {
-        lock (matchesLock)
-        {
-            Remove(match);
-            UpdateMatchStatus(match, statusId);
-        }
-    }
-
-    public void UpdateMatchStatus(Match match, int statusId)
+    public async Task UpdateMatchStatus(Match match, int statusId)
     {
         var criteria = new UpdateStatusCriteria
         {
@@ -56,7 +46,8 @@ public class MatchServiceImp : MatchService
             TypeId = match.TypeId,
             StatusId = statusId
         };
-        repository.Execute(criteria);
+
+        await repository.ExecuteAsync(criteria);
     }
 
     public void Remove(Match match)
@@ -100,8 +91,8 @@ public class MatchServiceImp : MatchService
 
         return appSettingsKey.EnvironmentName switch
         {
-            Env.Pro => leagueId > 0 ? fantasyMatches.Where(x => x.LeagueId != leagueId).ToList() : fantasyMatches,
-            Env.Uat => fantasyMatches.Where(x => x.LeagueId == leagueId).ToList(),
+            Environment.Pro => leagueId > 0 ? fantasyMatches.Where(x => x.LeagueId != leagueId).ToList() : fantasyMatches,
+            Environment.Uat => fantasyMatches.Where(x => x.LeagueId == leagueId).ToList(),
             _ => fantasyMatches
         };
     }
