@@ -30,8 +30,6 @@ public class CalcServiceTests
 
         var settings = new AppSettingsKey()
         {
-            RetryInterval = 1000,
-            RetryCount = 1,
             EnvironmentName = "Local",
             SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
         };

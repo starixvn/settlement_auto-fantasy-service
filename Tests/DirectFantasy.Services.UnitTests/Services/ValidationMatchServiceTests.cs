@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using DirectFantasy.Core.Constants;
 using DirectFantasy.Core.Models;
 using DirectFantasy.Services.Services;
 using Fanex.Data.Repository;
-using Fanex.Settlement.ScaleOut.Criteria.Normal;
-using Fanex.Settlement.ScaleOut.Models;
-using Fanex.Settlement.ScaleOut.Request;
 using Fanex.Settlement.ScaleOut.Services;
 using Microsoft.Extensions.Options;
 using NSubstitute;
@@ -27,8 +23,6 @@ public class ValidationMatchServiceTests
 
         var settings = new AppSettingsKey()
         {
-            RetryInterval = 1000,
-            RetryCount = 1,
             EnvironmentName = "Local",
             SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
         };

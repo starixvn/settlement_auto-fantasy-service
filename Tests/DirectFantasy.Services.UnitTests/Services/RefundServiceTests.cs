@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.JavaScript;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using DirectFantasy.Core.Constants;
-using DirectFantasy.Core.Models;
+﻿using DirectFantasy.Core.Models;
 using DirectFantasy.Core.Services;
 using DirectFantasy.Services.Criteria;
 using DirectFantasy.Services.Services;
@@ -14,7 +6,6 @@ using Fanex.Data.Repository;
 using Fanex.Settlement.ScaleOut.Request;
 using Fanex.Settlement.ScaleOut.Services;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using NSubstitute;
 
 namespace DirectFantasy.Services.UnitTests.Services;
@@ -34,8 +25,6 @@ public class RefundServiceTests
 
         var settings = new AppSettingsKey()
         {
-            RetryInterval = 1000,
-            RetryCount = 1,
             EnvironmentName = "Local",
             SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
         };
