@@ -13,6 +13,7 @@
     <Setting Key="NAP_UserLog_WriteLogPreSettlement" SpName="NAP_UserLog_WriteLogPreSettlement" DbName="DBUserLog.LogTDB.bodbAdminNet" />
     <Setting Key="WriteLog_UserLog_Settle" SpName="WriteLog_UserLog_Settle" DbName="DBLOG.bodb_CustomerLog.bodbAdminNet" TimeOut="20" />
     <Setting Key="NAP_Set_AutoPayout_Fantasy_ScheduleSel" SpName="NAP_Set_AutoPayout_Fantasy_ScheduleSel" DbName="DBPRO.bodb02.bodbAdminNet" />
+    <Setting Key="NAP_Set_AutoRefund_ResultUpd" SpName="NAP_Set_AutoRefund_ResultUpd" DbName="DBPRO.bodb02.bodbAdminNet" />
   </Function>
 
   <Function Name="Scale Out TransDb">
