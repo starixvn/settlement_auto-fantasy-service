@@ -21,7 +21,9 @@ public class DirectFantasyControllerImp : DirectFantasyController
         var newMatches = (await matchService.PeekNewMatch())
             .Where(n => !n.IsChecking)
             .ToList();
-
+        Console.WriteLine($"A: {DateTime.Now}");
+        await Task.Delay(TimeSpan.FromSeconds(30));
+        Console.WriteLine($"B: {DateTime.Now}");
         newMatches.ForEach(m =>
         {
             Task.Run(() => matchSettlementHandler.Progress(m))
