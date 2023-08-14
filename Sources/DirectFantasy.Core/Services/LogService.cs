@@ -30,7 +30,8 @@ public class LogServiceImp : LogService
             HtAwayScore = match.HtAwayScore,
             FinalHomeScore = match.FinalHomeScore,
             FinalAwayScore = match.FinalAwayScore,
-            Remark = message
+            IsRefund = match.IsRefund,
+            Remark = message,
         };
 
         await repository.ExecuteAsync(criteria);

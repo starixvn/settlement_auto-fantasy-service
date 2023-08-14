@@ -9,4 +9,6 @@ public static class SettleActionId
     public const int HalfTypeAfterSettleFail = 185;
 
     public const int FullTypeAfterSettleFail = 186;
+
+    public const int RefundSingleAction = 81022;
 }
