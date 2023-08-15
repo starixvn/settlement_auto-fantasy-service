@@ -90,7 +90,6 @@ public class MatchSettlementHandlerImp : MatchSettlementHandler
             return;
         }
 
-        Console.WriteLine(validateResult.ErrMsg);
         await logService.Write(match, validateResult.ErrMsg);
         await settleService.InsertAutoPayoutResult(match, Source.InfoSite, MatchStatus.Failed);
     }
