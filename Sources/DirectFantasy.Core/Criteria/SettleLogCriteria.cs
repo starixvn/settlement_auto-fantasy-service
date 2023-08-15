@@ -18,20 +18,7 @@ public class SettleLogCriteria : NonQueryCommand
     [SpParam(Ignored = true)]
     public bool IsRefund { get; set; }
 
-    public int ActionId
-    {
-        get
-        {
-            if (IsRefund)
-            {
-                return SettleActionId.RefundSingleAction;
-            }
-
-            return TypeId == SettleType.FullTime
-                ? SettleActionId.FullTypeAfterSettleFail
-                : SettleActionId.HalfTypeAfterSettleFail;
-        }
-    }
+    public int ActionId => IsRefund ? SettleActionId.RefundSingleAction : SettleActionId.CalcAll;
 
     public int? FinalHomeScore { get; set; }
 
