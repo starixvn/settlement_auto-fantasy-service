@@ -22,6 +22,8 @@ public class DirectFantasyControllerImp : DirectFantasyController
             .Where(n => !n.IsChecking)
             .ToList();
 
+        await Task.Delay(TimeSpan.FromSeconds(30));
+
         newMatches.ForEach(m =>
         {
             Task.Run(() => matchSettlementHandler.Progress(m))
