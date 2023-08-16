@@ -31,7 +31,7 @@ public class LogServiceImp : LogService
             FinalHomeScore = match.FinalHomeScore,
             FinalAwayScore = match.FinalAwayScore,
             IsRefund = match.IsRefund,
-            Remark = match.IsRefund ? message : $"Failed Direct Payout: {message}",
+            Remark = message
         };
 
         await repository.ExecuteAsync(criteria);

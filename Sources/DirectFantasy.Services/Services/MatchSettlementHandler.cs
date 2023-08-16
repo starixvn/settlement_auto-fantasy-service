@@ -45,19 +45,8 @@ public class MatchSettlementHandlerImp : MatchSettlementHandler
 
     private async Task ProgressCalc(Match match)
     {
-        try
-        {
-            await HandleCalc(match);
-        }
-        catch (Exception ex)
-        {
-            await logService.Write(match, ex.Message);
-            await settleService.InsertAutoPayoutResult(match, 0, MatchStatus.Failed);
-        }
-        finally
-        {
-            matchService.Remove(match);
-        }
+        await HandleCalc(match);
+        matchService.Remove(match);
     }
 
     private async Task ProgressRefund(Match match)
@@ -90,7 +79,7 @@ public class MatchSettlementHandlerImp : MatchSettlementHandler
             return;
         }
 
-        await logService.Write(match, validateResult.ErrMsg);
+        await logService.Write(match, $"Direct Payout failed: {validateResult.ErrMsg}");
         await settleService.InsertAutoPayoutResult(match, Source.InfoSite, MatchStatus.Failed);
     }
 
@@ -103,11 +92,10 @@ public class MatchSettlementHandlerImp : MatchSettlementHandler
         if (result.IsSuccessful)
         {
             await refundService.HandleRefundPush(match);
+            return;
         }
-        else
-        {
-            await logService.Write(match, result.ErrMsg);
-            await matchService.UpdateMatchRemark(match, result.ErrMsg, MatchStatus.Failed);
-        }
+
+        await logService.Write(match, $"Auto Refund failed: {result.ErrMsg}");
+        await matchService.UpdateMatchRemark(match, result.ErrMsg, MatchStatus.Failed);
     }
 }

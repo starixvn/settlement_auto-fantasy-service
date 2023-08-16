@@ -49,7 +49,7 @@ public class ValidationMatchServiceTests
         //});
 
         //// Act
-        //var result = await validationMatchService.ValidateTicket(match);
+        //var result = await validationMatchService.ValidateEventTicket(match);
 
         //// Assert
         //Assert.NotNull(result);
