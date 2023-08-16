@@ -71,7 +71,7 @@ public class MatchSettlementHandlerImp : MatchSettlementHandler
 
     private async Task HandleCalc(Match match)
     {
-        var validateResult = await validationMatchService.ValidateTicket(match);
+        var validateResult = await validationMatchService.ValidateEventTicket(match);
 
         if (validateResult.IsSuccessful)
         {
@@ -79,7 +79,7 @@ public class MatchSettlementHandlerImp : MatchSettlementHandler
             return;
         }
 
-        await logService.Write(match, $"Direct Payout failed: {validateResult.ErrMsg}");
+        await logService.Write(match, $"Failed Direct Payout: {validateResult.ErrMsg}");
         await settleService.InsertAutoPayoutResult(match, Source.InfoSite, MatchStatus.Failed);
     }
 
@@ -87,7 +87,7 @@ public class MatchSettlementHandlerImp : MatchSettlementHandler
     {
         await validationMatchService.ValidateTicketMatch(match);
 
-        var result = await validationMatchService.ValidateTicket(match);
+        var result = await validationMatchService.ValidateEventTicket(match);
 
         if (result.IsSuccessful)
         {

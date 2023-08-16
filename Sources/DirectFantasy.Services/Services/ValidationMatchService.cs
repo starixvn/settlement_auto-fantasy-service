@@ -16,7 +16,7 @@ public interface ValidationMatchService
 {
     Task ValidateTicketMatch(Match match);
 
-    Task<Result> ValidateTicket(Match match);
+    Task<Result> ValidateEventTicket(Match match);
 }
 
 public class ValidationMatchServiceImp : ValidationMatchService
@@ -37,7 +37,7 @@ public class ValidationMatchServiceImp : ValidationMatchService
         this.generalService = generalService;
     }
 
-    public async Task<Result> ValidateTicket(Match match)
+    public async Task<Result> ValidateEventTicket(Match match)
     {
         var request = new EventTicketRequest
         {
