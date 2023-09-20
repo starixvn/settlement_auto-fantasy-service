@@ -1,7 +1,13 @@
 ﻿using AutoMapper;
+using DirectFantasy.Core.Exceptions;
 using DirectFantasy.Core.Models;
+using DirectFantasy.Services.Criteria;
+using DirectFantasy.Services.Models;
 using DirectFantasy.Services.Services;
 using Fanex.Data.Repository;
+using Fanex.Settlement.ScaleOut.Criteria.Normal;
+using Fanex.Settlement.ScaleOut.Models;
+using Fanex.Settlement.ScaleOut.Request;
 using Fanex.Settlement.ScaleOut.Services;
 using Microsoft.Extensions.Options;
 using NSubstitute;
@@ -34,24 +40,54 @@ public class ValidationMatchServiceTests
     [Fact]
     public async void ValidateTicket_ValidMatch_ReturnResultSuccess()
     {
-        // Arrange
-        //var match = new Match
-        //{
-        //    MatchId = 1,
-        //    Action = "REFUND"
-        //};
+        var match = new Match
+        {
+            MatchId = 1,
+            Action = "REFUND"
+        };
 
-        //mapper.Map<ValidateTicketCriteria>(Arg.Any<EventTicketRequest>()).Returns(new ValidateTicketCriteria());
-        //generalService.ExecuteAsync(Arg.Any<ValidateTicketCriteria>()).Returns(new ResultMessage
-        //{
-        //    ErrorCode = 0,
-        //    ErrorMessage = ""
-        //});
+        mapper.Map<ValidateTicketCriteria>(Arg.Any<EventTicketRequest>()).Returns(new ValidateTicketCriteria());
+        generalService.ExecuteAsync(Arg.Any<ValidateTicketCriteria>()).Returns(new ResultMessage
+        {
+            ErrorCode = 0,
+            ErrorMessage = ""
+        });
 
-        //// Act
-        //var result = await validationMatchService.ValidateEventTicket(match);
+        var result = await validationMatchService.ValidateEventTicket(match);
 
-        //// Assert
-        //Assert.NotNull(result);
+        Assert.Equal(0, result.ErrCode);
+    }
+
+    [Fact]
+    public void ValidateTicketMatch_NotExistMarkedTicket_DoNotReturnOrThrowAnything()
+    {
+        var match = new Match
+        {
+            MatchId = 1,
+            Action = "REFUND"
+        };
+        repository.GetAsync<MatchTicketInfo>(Arg.Any<MatchTicketInfoCriteria>()).Returns(new MatchTicketInfo());
+
+        var exception = Record.ExceptionAsync(() => validationMatchService.ValidateTicketMatch(match));
+
+        Assert.Null(exception.Result);
+    }
+
+    [Fact]
+    public void ValidateTicketMatch_ExistMarkedTicket_ThrowException()
+    {
+        var match = new Match
+        {
+            MatchId = 1,
+            Action = "REFUND"
+        };
+        repository.GetAsync<MatchTicketInfo>(Arg.Is<MatchTicketInfoCriteria>(c => c.DbServer == "DBTXN")).Returns(new MatchTicketInfo
+        {
+            IsExistMarkedTicket = true
+        });
+
+        repository.GetAsync<MatchTicketInfo>(Arg.Is<MatchTicketInfoCriteria>(c => c.DbServer != "DBTXN")).Returns(new MatchTicketInfo());
+
+        Assert.ThrowsAsync<MarkedTicketException>(() => validationMatchService.ValidateTicketMatch(match));
     }
 }

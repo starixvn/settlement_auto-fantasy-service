@@ -7,6 +7,7 @@ using Fanex.Caching.Redis;
 using Fanex.Data.Repository;
 using Microsoft.Extensions.Options;
 using NSubstitute;
+using Environment = DirectFantasy.Core.Constants.Environment;
 
 namespace DirectFantasy.Services.UnitTests.Services;
 
@@ -21,17 +22,25 @@ public class MatchServiceTests
         repository = Substitute.For<IDynamicRepository>();
         cache = new RedisCache(new RedisCacheOptions
         {
-            ConnectionString = "10.18.200.131:16379,password=foo1@bared,defaultDatabase=11",
+            ConnectionString = "10.18.200.131:16379,password=foo1@bared,defaultDatabase=13",
             ApplicationName = "Settlement-LOCAL"
         });
+
+        var settings = new AppSettingsKey()
+        {
+            EnvironmentName = "Local",
+            SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
+        };
+        var appSettingsKey = Options.Create(settings);
+        matchService = new MatchServiceImp(repository, cache, appSettingsKey);
     }
 
     [Fact]
     public async Task UpdateMatchRemark_ValidInput_CallCorrectExecuteAsync()
     {
         // Arrange
-        var remark = "";
-        var statusId = 4;
+        const string remark = "";
+        const int statusId = 4;
         var criteriaExpect = new UpdateStatusCriteria
         {
             MatchId = 1,
@@ -44,14 +53,6 @@ public class MatchServiceTests
             MatchId = 1,
             TypeId = 2,
         };
-        var settings = new AppSettingsKey()
-        {
-            EnvironmentName = "Local",
-            SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
-        };
-        var appSettingsKey = Options.Create(settings);
-
-        matchService = new MatchServiceImp(repository, cache, appSettingsKey);
 
         // Act
         await matchService.UpdateMatchRemark(match, remark, statusId);
@@ -61,6 +62,32 @@ public class MatchServiceTests
             criteria.MatchId == criteriaExpect.MatchId &&
             criteria.TypeId == criteriaExpect.TypeId &&
             criteria.Remark == remark &&
+            criteria.StatusId == statusId));
+    }
+
+    [Fact]
+    public async Task UpdateMatchStatus_ValidInput_CallCorrectExecuteAsync()
+    {
+        const int statusId = 4;
+        var criteriaExpect = new UpdateStatusCriteria
+        {
+            MatchId = 1,
+            TypeId = 2,
+            StatusId = statusId
+        };
+        var match = new Match
+        {
+            MatchId = 1,
+            TypeId = 2,
+        };
+
+        // Act
+        await matchService.UpdateMatchStatus(match, statusId);
+
+        // Assert
+        await repository.Received(1).ExecuteAsync(Arg.Is<UpdateStatusCriteria>(criteria =>
+            criteria.MatchId == criteriaExpect.MatchId &&
+            criteria.TypeId == criteriaExpect.TypeId &&
             criteria.StatusId == statusId));
     }
 
@@ -82,14 +109,6 @@ public class MatchServiceTests
             }
         };
         repository.FetchAsync<Match>(Arg.Any<GetFantasyMatchesCriteria>()).Returns(matches);
-        var settings = new AppSettingsKey()
-        {
-            EnvironmentName = "Local",
-            SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
-        };
-        var appSettingsKey = Options.Create(settings);
-
-        matchService = new MatchServiceImp(repository, cache, appSettingsKey);
 
         // Act
         await matchService.PeekNewMatch();
@@ -117,14 +136,6 @@ public class MatchServiceTests
             }
         };
         repository.FetchAsync<Match>(Arg.Any<GetFantasyMatchesCriteria>()).Returns(matches);
-        var settings = new AppSettingsKey()
-        {
-            EnvironmentName = "Local",
-            SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
-        };
-        var appSettingsKey = Options.Create(settings);
-
-        matchService = new MatchServiceImp(repository, cache, appSettingsKey);
 
         // Act
         await matchService.PeekNewMatch();
@@ -154,17 +165,15 @@ public class MatchServiceTests
             }
         };
         repository.FetchAsync<Match>(Arg.Any<GetFantasyMatchesCriteria>()).Returns(matches);
-
         var settings = new AppSettingsKey()
         {
-            EnvironmentName = "UAT",
+            EnvironmentName = Environment.Uat,
             SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
         };
         var appSettingsKey = Options.Create(settings);
-
         matchService = new MatchServiceImp(repository, cache, appSettingsKey);
 
-        const int cacheExpiredInDays = 3;
+        const int cacheExpiredInDays = 1;
         var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(cacheExpiredInDays));
         await cache.SetAsync(CacheKey.LeagueId, 1, cachePolicy);
 
@@ -196,17 +205,14 @@ public class MatchServiceTests
             }
         };
         repository.FetchAsync<Match>(Arg.Any<GetFantasyMatchesCriteria>()).Returns(matches);
-
         var settings = new AppSettingsKey()
         {
-            EnvironmentName = "PRO",
+            EnvironmentName = Environment.Pro,
             SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
         };
         var appSettingsKey = Options.Create(settings);
-
         matchService = new MatchServiceImp(repository, cache, appSettingsKey);
-
-        const int cacheExpiredInDays = 3;
+        const int cacheExpiredInDays = 1;
         var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(cacheExpiredInDays));
         await cache.SetAsync(CacheKey.LeagueId, 1, cachePolicy);
 

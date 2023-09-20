@@ -39,7 +39,10 @@ public class DirectFantasyHostedService : IHostedService
     {
         while (running)
         {
-            if (maintenanceService.IsMaintenance) continue;
+            if (maintenanceService.IsMaintenance)
+            {
+                continue;
+            }
 
             MainProcess();
 

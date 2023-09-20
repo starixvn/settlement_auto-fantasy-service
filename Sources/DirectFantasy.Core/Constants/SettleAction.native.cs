@@ -1,6 +1,6 @@
 ﻿namespace DirectFantasy.Core.Constants;
 
-public class SettleAction
+public static class SettleAction
 {
     public const string Refund = "REFUND";
 }
