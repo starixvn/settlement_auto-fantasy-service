@@ -2,9 +2,11 @@ using DirectFantasy.Core;
 using DirectFantasy.Core.Models;
 using DirectFantasy.Services;
 using DirectFantasy.WorkerService;
+using Fanex.Data.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddFanexSql(builder.Configuration);
 builder.Services.Configure<AppSettingsKey>(builder.Configuration);
 builder.Services.AddCoreServices();
 builder.Services.AddDirectFantasyServices();

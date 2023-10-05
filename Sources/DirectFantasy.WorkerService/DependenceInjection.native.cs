@@ -2,8 +2,6 @@
 using DirectFantasy.WorkerService.Profiles;
 using Fanex.Caching;
 using Fanex.Caching.Redis;
-using Fanex.Data;
-using Fanex.Data.SqlServer;
 using Fanex.Logging;
 using Fanex.Logging.Sentry.RavenClient;
 using Fanex.Settlement.ScaleOut;
@@ -25,7 +23,6 @@ namespace DirectFantasy.WorkerService
             service.AddRedis(configuration);
 
             StartUmSetting(configuration);
-            StartDataBaseSetting(configuration);
             StartLogSetting(configuration);
         }
 
@@ -71,23 +68,6 @@ namespace DirectFantasy.WorkerService
                 .UseConfig(umConfig)
                 .UseCacheService(new UMCacheService(new CacheService()))
                 .UseRestClient(new UMRestClient(umConfig));
-        }
-
-        private static void StartDataBaseSetting(IConfiguration configuration)
-        {
-            var connections = configuration.GetSection("ConnectionStrings")
-                .GetChildren()
-                .AsEnumerable()
-                .ToDictionary(
-                    x => x.GetValue<string>("Name") ?? string.Empty,
-                    y => new ConnectionConfiguration(y.GetValue<string>("Name"), y.GetValue<string>("ConnectionString"), y.GetValue<string>("ProviderName"))
-                );
-            DbSettingProviderManager
-                .StartNewSession()
-                .Use(connections)
-                .WithSqlServer()
-                .UseDefaultDbSettingProvider(resourcePath: configuration.GetSection("StoredProcedurePath").Value)
-                .Run();
         }
 
         private static void StartLogSetting(IConfiguration configuration)
