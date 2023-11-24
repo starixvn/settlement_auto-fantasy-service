@@ -5,6 +5,8 @@ using Fanex.Caching.Redis;
 using Fanex.Logging;
 using Fanex.Logging.Sentry.RavenClient;
 using Fanex.Settlement.ScaleOut;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using ONEbook.UM;
 using ONEbook.UM.AspNetCore;
 using ONEbook.UM.Configurations;
@@ -32,6 +34,7 @@ namespace DirectFantasy.WorkerService
             service.AddSingleton<IUMCacheService, UMCacheService>();
             service.AddSingleton<IUMRestClient, UMRestClient>();
             service.AddSingleton<ONEbook.UM.Services.IMaintenanceService, ONEbook.UM.Services.MaintenanceService>();
+            service.AddMemoryCache();
         }
 
         private static void AddRedis(this IServiceCollection services, IConfiguration configuration)

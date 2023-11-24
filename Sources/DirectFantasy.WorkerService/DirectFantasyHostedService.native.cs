@@ -1,5 +1,6 @@
-﻿using DirectFantasy.Core.Services;
-using DirectFantasy.Services.Services;
+﻿using DirectFantasy.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using LogService = Fanex.Logging.LogService;
 
 namespace DirectFantasy.WorkerService;

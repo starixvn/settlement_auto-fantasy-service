@@ -1,0 +1,10 @@
+﻿global using AutoMapper;
+global using Fanex.Data;
+global using Fanex.Data.Repository;
+global using Fanex.Settlement.Converter.Services;
+global using Fanex.Settlement.ScaleOut.Request;
+global using Fanex.Settlement.ScaleOut.Services;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Options;
+global using ONEbook.UM;
+global using ONEbook.UM.Services;
