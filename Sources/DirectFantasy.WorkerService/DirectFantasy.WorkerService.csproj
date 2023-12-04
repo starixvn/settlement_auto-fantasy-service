@@ -1,26 +1,64 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fanex.Data" Version="4.2.3" />
-    <PackageReference Include="Fanex.Data.SqlServer" Version="4.2.3" />
+    <None Remove="appsettings.DEV.json" />
+    <None Remove="appsettings.Development.json" />
+    <None Remove="appsettings.json" />
+    <None Remove="appsettings.LOCAL.json" />
+    <None Remove="appsettings.PROD.json" />
+    <None Remove="appsettings.SIT.json" />
+    <None Remove="appsettings.UAT.json" />
+    <None Remove="App_Data\SpName.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.DEV.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.LOCAL.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.PROD.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.SIT.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.UAT.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\SpName.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Fanex.Data" Version="4.2.5.1" />
+    <PackageReference Include="Fanex.Data.SqlServer" Version="4.2.5.1" />
+    <!-- ReSharper disable once VulnerablePackage -->
+    <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1.2" />
+    <PackageReference Include="Fanex.Settlement.Converter" Version="1.0.0.1" />
     <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.1.1.1" />
     <PackageReference Include="ONEbook.UM.Transport" Version="3.1.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DirectFantasy.Services\DirectFantasy.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="App_Data\SpName.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\DirectFantasy\DirectFantasy.csproj" />
   </ItemGroup>
 
 </Project>
