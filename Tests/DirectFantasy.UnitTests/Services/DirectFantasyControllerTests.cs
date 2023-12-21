@@ -32,7 +32,6 @@ public class DirectFantasyControllerTests
 
         // Act
         await controller.ProcessAsync();
-        Thread.Sleep(100);
 
         // Assert
         await matchSettlementHandler.Received().Progress(Arg.Any<Match>());
