@@ -1,5 +1,7 @@
-﻿using DirectFantasy.Constants;
+﻿using AutoMapper.Internal;
+using DirectFantasy.Constants;
 using DirectFantasy.Criteria;
+using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Exceptions;
 using DirectFantasy.Models;
 using Fanex.Settlement.ScaleOut.Criteria.Normal;
@@ -10,7 +12,11 @@ public interface ValidationMatchService
 {
     Task ValidateTicketMatch(Match match);
 
+    void ValidateRelatedMatch(FantasyMatch match);
+
     Task<Result> ValidateEventTicket(Match match);
+
+    Task<Result> ValidateEventTicketOS(SettleCriteria settleCriteria);
 }
 
 public class ValidationMatchServiceImp : ValidationMatchService
@@ -39,7 +45,28 @@ public class ValidationMatchServiceImp : ValidationMatchService
             Action = match.Action,
             SpName = match.IsRefund ? SpName.RefundPush : SpName.PayoutPush,
             IsAuto = true,
-            IsAutoRefund = match.IsRefund
+            IsAutoRefund = match.IsRefund,
+        };
+
+        var criteria = mapper.Map<EventTicketRequest, ValidateTicketCriteria>(request);
+        var resultMessage = await generalService.ExecuteAsync(criteria);
+
+        return new Result
+        {
+            ErrCode = resultMessage.ErrorCode,
+            ErrMsg = resultMessage.ErrorMessage
+        };
+    }
+
+    public async Task<Result> ValidateEventTicketOS(SettleCriteria settleCriteria)
+    {
+        var request = new EventTicketRequest
+        {
+            MatchId = settleCriteria.MatchId,
+            Action = settleCriteria.Action,
+            SpName = settleCriteria.SpName,
+            IsAuto = true,
+            SelectedResources = settleCriteria.SelectedResources,
         };
 
         var criteria = mapper.Map<EventTicketRequest, ValidateTicketCriteria>(request);
@@ -59,6 +86,58 @@ public class ValidationMatchServiceImp : ValidationMatchService
         if (listTicketInfo.Exists(item => item.IsExistMarkedTicket))
         {
             throw new MarkedTicketException();
+        }
+    }
+
+    public void ValidateRelatedMatch(FantasyMatch fantasyMatch)
+    {
+        ValidateInsufficient(fantasyMatch);
+        ValidateHoldStatus(fantasyMatch);
+        ValidateCalculatedMatch(fantasyMatch);
+    }
+
+    private void ValidateCalculatedMatch(FantasyMatch fantasyMatch)
+    {
+        foreach (var item in fantasyMatch.RelatedMatches)
+        {
+            if (item.EventStatus != EventStatus.Completed)
+            {
+                throw new RelatedMatchesNotCalculatedException();
+            }
+        }
+    }
+
+    private void ValidateInsufficient(FantasyMatch fantasyMatch)
+    {
+        var homeTeamIds = fantasyMatch.FantasyMatchDetail.FantasyHomeTeam.Split(",");
+        var awayTeamIds = fantasyMatch.FantasyMatchDetail.FantasyAwayTeam.Split(",");
+
+        var notExistsMatch = homeTeamIds
+            .Concat(awayTeamIds)
+            .Any(x =>
+            {
+                var exitsMatch = fantasyMatch.RelatedMatches.FirstOrDefault(m => m.HomeId == int.Parse(x) || m.AwayId == int.Parse(x));
+                return exitsMatch is null;
+            });
+
+        if (notExistsMatch) throw new RelatedMatchesInsufficientException();
+    }
+
+    private void ValidateHoldStatus(FantasyMatch fantasyMatch)
+    {
+        foreach (var item in fantasyMatch.RelatedMatches)
+        {
+            VerifyHoldStatus(item.Remark);
+        }
+    }
+
+    private void VerifyHoldStatus(RemarkSettingModel remark)
+    {
+        bool[] conditionsToCheck = { remark.IsMtdHold, remark.IsUndecided, remark.IsPending, remark.IsUnderSettle, remark.IsKeyHold };
+
+        if (conditionsToCheck.Any(item => item))
+        {
+            throw new HoldStatusException();
         }
     }
 

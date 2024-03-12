@@ -21,7 +21,7 @@ public class RefundServiceTests
         repository = Substitute.For<IDynamicRepository>();
         scaleOutSettleService = Substitute.For<ScaleOutSettleService>();
         logService = Substitute.For<LogService>();
-        var createCriteriaService = Substitute.For<CreateCriteriaService>();
+        var createCriteriaService = Substitute.For<CriteriaService>();
         var settings = new AppSettingsKey()
         {
             EnvironmentName = "Local",

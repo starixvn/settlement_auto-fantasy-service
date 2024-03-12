@@ -3,8 +3,8 @@
 namespace DirectFantasy.Models;
 
 [XmlRoot("Resources")]
-public class Resources
+public class Resources<T>
 {
     [XmlElement("Resource")]
-    public List<ResourceItem> ResourceItems { get; set; }
+    public List<T> ResourceItems { get; set; }
 }

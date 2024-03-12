@@ -21,6 +21,13 @@ public static class DependenceInjections
         service.AddTransient<RefundService, RefundServiceImp>();
         service.AddTransient<ValidationMatchService, ValidationMatchServiceImp>();
         service.AddTransient<XmlConvertService, XmlConvertServiceImp>();
-        service.AddTransient<CreateCriteriaService, CreateCriteriaServiceImp>();
+        service.AddTransient<CriteriaService, CriteriaServiceImp>();
+        service.AddTransient<ResultDetailService, ResultDetailServiceImp>();
+
+        service.AddTransient<OSMatchService, OSMatchServiceImp>();
+        service.AddTransient<DirectOSFantasyController, DirectOSFantasyControllerImp>();
+        service.AddTransient<OSMatchSettlementHandler, OSMatchSettlementHandlerImp>();
+        service.AddTransient<RefundOSService, RefundOSServiceImp>();
+        service.AddTransient<CalcOSService, CalcOSServiceImp>();
     }
 }

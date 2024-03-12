@@ -20,14 +20,14 @@ public class RefundServiceImp : RefundService
 
     private readonly LogService logService;
 
-    private readonly CreateCriteriaService createCriteriaService;
+    private readonly CriteriaService createCriteriaService;
 
     public RefundServiceImp(
     IDynamicRepository repository,
     ScaleOutSettleService scaleOutSettleService,
     IOptions<AppSettingsKey> appSettingsKey,
     LogService logService,
-    CreateCriteriaService createCriteriaService)
+    CriteriaService createCriteriaService)
     {
         this.appSettingsKey = appSettingsKey.Value;
         this.repository = repository;

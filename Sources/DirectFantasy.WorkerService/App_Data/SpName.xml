@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
 	<Function Name="AutoPayout">
 		<Setting Key="NAP_Set_AutoPayout_MatchSelDetail" SpName="NAP_Set_AutoPayout_MatchSelDetail" DbName="DBPRO.bodb02.wsv_nap" />
@@ -15,6 +15,10 @@
 		<Setting Key="NAP_SettlementLog_Ins" SpName="NAP_SettlementLog_Ins" DbName="DBLOG.bodb_CustomerLog.wsv_nap" />
 		<Setting Key="NAP_Set_AutoPayout_Fantasy_ScheduleSel" SpName="NAP_Set_AutoPayout_Fantasy_ScheduleSel" DbName="DBPRO.bodb02.wsv_nap" />
 		<Setting Key="NAP_Set_AutoRefund_ResultUpd" SpName="NAP_Set_AutoRefund_ResultUpd" DbName="DBPRO.bodb02.wsv_nap" />
+		<Setting Key="NAP_Set_AutoPayout_FantasyOS_ScheduleSel" SpName="NAP_Set_AutoPayout_FantasyOS_ScheduleSel_xtest" DbName="DBPRO.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_Set_FantasyMatchOSSel" SpName="NAP_Set_FantasyMatchOSSel_xtest" DbName="DBPRO.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_Set_AutoPayoutResultOS_Update" SpName="NAP_Set_AutoPayoutResultOS_Update" DbName="DBPRO.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_Set_AutoRefundOS_ResultIns" SpName="NAP_Set_AutoRefundOS_ResultIns" DbName="DBPRO.bodb02.bodbAdminNet" />
 	</Function>
 
 	<Function Name="Scale Out TransDb">
@@ -44,6 +48,13 @@
 			<Setting Key="NAP_Set_AutoRefund_TicketInfo_DBSID01" SpName="NAP_Set_AutoRefund_TicketInfo" DbName="DBSID01.bodb02.wsv_nap" />
 			<Setting Key="NAP_Set_AutoRefund_TicketInfo_DBSID02" SpName="NAP_Set_AutoRefund_TicketInfo" DbName="DBSID02.bodb02.wsv_nap" />
 			<Setting Key="NAP_Set_AutoRefund_TicketInfo_DBSID03" SpName="NAP_Set_AutoRefund_TicketInfo" DbName="DBSID03.bodb02.wsv_nap" />
+		</Function>
+
+		<Function Name="NAP_Admin_Settlement_Profile_Push">
+			<Setting Key="NAP_Admin_Settlement_Profile_Push_DBTXN" SpName="NAP_Admin_Settlement_Profile_Push" DbName="DBTXN.bodb02.bodbAdminNet" />
+			<Setting Key="NAP_Admin_Settlement_Profile_Push_DBSID01" SpName="NAP_Admin_Settlement_Profile_Push" DbName="DBSID01.bodb02.bodbAdminNet" />
+			<Setting Key="NAP_Admin_Settlement_Profile_Push_DBSID02" SpName="NAP_Admin_Settlement_Profile_Push" DbName="DBSID02.bodb02.bodbAdminNet" />
+			<Setting Key="NAP_Admin_Settlement_Profile_Push_DBSID03" SpName="NAP_Admin_Settlement_Profile_Push" DbName="DBSID03.bodb02.bodbAdminNet" />
 		</Function>
 	</Function>
 </Functions>

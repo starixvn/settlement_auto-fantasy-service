@@ -3,7 +3,7 @@
 namespace DirectFantasy.Exceptions;
 
 [Serializable]
-public class MarkedTicketException : AutoRefundException
+public class MarkedTicketException : AppException
 {
     public MarkedTicketException()
     {
@@ -20,7 +20,6 @@ public class MarkedTicketException : AutoRefundException
     {
     }
 
-    [Obsolete(DiagnosticId = "SYSLIB0051")]
     protected MarkedTicketException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {

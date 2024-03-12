@@ -20,9 +20,17 @@ public class Match
 
     public int TypeId { get; set; } = SettleType.FullTime;
 
+    public int SportType { get; set; }
+
     public int LeagueId { get; set; }
 
     public bool IsChecking { get; set; }
 
     public bool IsRefund => Action.Equals(SettleAction.Refund);
+
+    public IEnumerable<ResultDetail> ResultDetails { get; set; }
+
+    public override bool Equals(object obj) => obj is Match match && match.MatchId == MatchId;
+
+    public override int GetHashCode() => MatchId;
 }
