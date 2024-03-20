@@ -14,6 +14,8 @@ public class AddAutoPayoutResultCriteria : NonQueryCommand
 
     public int StatusId { get; set; }
 
+    public string Remark { get; set; }
+
     public override bool IsValid() => MatchId > 0;
 
     public override string GetSettingKey() => "NAP_Set_AutoPayoutResultIns";

@@ -11,7 +11,7 @@ public interface CriteriaService
 {
     MatchSettleCriteria CreateMatchSettleCriteria(Match match);
 
-    AddAutoPayoutResultCriteria CreateAutoPayoutResult(Match match, int sourceId, int statusId);
+    AddAutoPayoutResultCriteria CreateAutoPayoutResult(Match match, int sourceId, int statusId, string remark = "");
 
     InsertLogCriteria CreateLogCalcCriteria(Match match);
 
@@ -45,7 +45,7 @@ public class CriteriaServiceImp : CriteriaService
         };
     }
 
-    public AddAutoPayoutResultCriteria CreateAutoPayoutResult(Match match, int sourceId, int statusId)
+    public AddAutoPayoutResultCriteria CreateAutoPayoutResult(Match match, int sourceId, int statusId, string remark = "")
     {
         var homeValue = match.HtHomeScore ?? 0;
         var awayValue = match.HtAwayScore ?? 0;
@@ -62,6 +62,7 @@ public class CriteriaServiceImp : CriteriaService
             TypeId = match.TypeId,
             SourceId = sourceId,
             StatusId = statusId,
+            Remark = remark,
             HomeValue = homeValue,
             AwayValue = awayValue
         };

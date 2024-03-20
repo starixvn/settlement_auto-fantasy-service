@@ -79,7 +79,7 @@ public class MatchSettlementHandlerImp : MatchSettlementHandler
         }
 
         await logService.WriteLog(match, $"Failed Direct Payout: {validateResult.ErrMsg}");
-        await settleService.InsertAutoPayoutResult(match, Source.InfoSite, MatchStatus.Failed);
+        await settleService.InsertAutoPayoutResult(match, Source.InfoSite, MatchStatus.Failed, validateResult.ErrMsg);
     }
 
     private async Task HandleRefund(Match match)
