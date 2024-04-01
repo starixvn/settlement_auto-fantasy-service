@@ -65,7 +65,7 @@ public class ResultDetailServiceImp : ResultDetailService
 
         var resultsOfAway = aways.SelectMany(x => x)
              .GroupBy(x => x.ResourceId)
-             .Select(group => new ResultTemp(group.Key, group.Sum(x => int.TryParse(x.HomeValue, out int value) ? value : 0)))
+             .Select(group => new ResultTemp(group.Key, group.Sum(x => int.TryParse(x.AwayValue, out int value) ? value : 0)))
              .ToList();
 
         var results = resultsOfHome

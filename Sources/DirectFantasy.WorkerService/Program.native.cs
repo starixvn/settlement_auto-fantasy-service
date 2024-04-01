@@ -13,7 +13,7 @@ builder.Services.Configure<AppSettingsKey>(builder.Configuration);
 builder.Services.AddDirectFantasyServices();
 builder.Services.AutoPayoutConfigServices(builder.Configuration);
 
-//builder.Services.AddHostedService<DirectFantasyHostedService>();
+builder.Services.AddHostedService<DirectFantasyHostedService>();
 builder.Services.AddHostedService<BasketBallFantasyWorker>();
 
 var app = builder.Build();
