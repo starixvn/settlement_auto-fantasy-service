@@ -14,7 +14,9 @@ public class BasketBallFantasyWorker : BackgroundService
     private readonly IMaintenanceService maintenanceService;
     private int counter;
 
-    public BasketBallFantasyWorker(DirectOSFantasyController directFantasyController, IConfiguration configuration, IMaintenanceService maintenanceService)
+    public BasketBallFantasyWorker(DirectOSFantasyController directFantasyController,
+        IConfiguration configuration,
+        IMaintenanceService maintenanceService)
     {
         this.directFantasyController = directFantasyController;
         this.configuration = configuration;

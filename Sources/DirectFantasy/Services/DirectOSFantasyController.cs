@@ -26,7 +26,6 @@ public class DirectOSFantasyControllerImp : DirectOSFantasyController
     public async Task ProcessAsync()
     {
         var newMatches = (await matchService.PeekNewMatch())
-            .Where(n => !n.IsChecking)
             .ToList();
 
         foreach (var newMatch in newMatches)

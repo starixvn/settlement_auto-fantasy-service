@@ -4,6 +4,7 @@ using DirectFantasy.Criteria;
 using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Models;
 using Fanex.Caching;
+using Environment = DirectFantasy.Constants.Environment;
 
 namespace DirectFantasy.Services;
 
@@ -86,12 +87,16 @@ public class MatchServiceImp : MatchService
     {
         var fantasyMatches = await GetFantasyMatches();
 
-        var (_, leagueId) = await cache.TryGetAsync<int>(CacheKey.LeagueId);
+        var (_, response) = await cache.TryGetAsync<string>(CacheKey.LeagueId);
+
+        var leagueIds = (response ?? "").Split(",");
 
         return appSettingsKey.EnvironmentName switch
         {
-            Constants.Environment.Pro => leagueId > 0 ? fantasyMatches.Where(x => x.LeagueId != leagueId).ToList() : fantasyMatches,
-            Constants.Environment.Uat => fantasyMatches.Where(x => x.LeagueId == leagueId).ToList(),
+            Environment.Pro => leagueIds.Length > 0
+                ? fantasyMatches.Where(m => !leagueIds.Contains(m.LeagueId.ToString())).ToList()
+                : fantasyMatches,
+            Environment.Uat => fantasyMatches.Where(m => leagueIds.Contains(m.LeagueId.ToString())).ToList(),
             _ => fantasyMatches
         };
     }
