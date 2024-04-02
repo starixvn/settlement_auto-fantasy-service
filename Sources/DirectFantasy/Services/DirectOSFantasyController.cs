@@ -28,9 +28,17 @@ public class DirectOSFantasyControllerImp : DirectOSFantasyController
         var newMatches = (await matchService.PeekNewMatch())
             .ToList();
 
-        foreach (var newMatch in newMatches)
+        Console.WriteLine($"Count match: {newMatches.Count}");
+
+        newMatches.ForEach(m =>
         {
-            await matchSettlementHandler.Progress(newMatch);
-        }
+            Task.Run(() => matchSettlementHandler.Progress(m))
+               .ConfigureAwait(false);
+        });
+
+        //foreach (var newMatch in newMatches)
+        //{
+        //    await matchSettlementHandler.Progress(newMatch);
+        //}
     }
 }
