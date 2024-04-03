@@ -3,6 +3,7 @@ using DirectFantasy.Constants;
 using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Exceptions;
 using DirectFantasy.Models;
+using LogServiceSentry = Fanex.Logging.LogService;
 
 namespace DirectFantasy.Services;
 
@@ -58,12 +59,9 @@ public class OSMatchSettlementHandlerImp : OSMatchSettlementHandler
         }
         catch (AppException ex)
         {
+            LogServiceSentry.Error(ex.Message, ex);
             await logService.WriteLog(match, ex.Description);
             await matchService.UpdateStatusResultOS(match, MatchStatus.Failed);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
         }
         finally
         {
@@ -95,6 +93,8 @@ public class OSMatchSettlementHandlerImp : OSMatchSettlementHandler
 
     public async Task HandleCalc(Match match)
     {
+        LogServiceSentry.Warn($"Handle calc {match.MatchId}");
+
         var relatedMatch = await matchService.GetRelatedMatches(match.MatchId);
 
         validationMatchService.ValidateRelatedMatch(relatedMatch);

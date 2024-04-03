@@ -3,6 +3,7 @@ using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Models;
 using Fanex.Caching;
 using Environment = DirectFantasy.Constants.Environment;
+using LogServiceSentry = Fanex.Logging.LogService;
 
 namespace DirectFantasy.Services;
 
@@ -53,11 +54,13 @@ public class OSMatchServiceImp : OSMatchService
     public async Task<List<Match>> PeekNewMatch()
     {
         var fantasyMatches = await GetMatchesByLeagues();
-
+        LogServiceSentry.Warn($"MatchFantasy Get: {fantasyMatches.Count}");
         lock (matchesLock)
         {
             var newMatches = fantasyMatches.Except(PoolMatches).ToList();
             PoolMatches.AddRange(newMatches);
+
+            LogServiceSentry.Warn($"NewMatchFantasy Get: {newMatches.Count}");
 
             return newMatches;
         }

@@ -9,14 +9,14 @@ namespace DirectFantasy.UnitTests.Services;
 
 public class CreateCriteriaServiceTests
 {
-    private readonly CreateCriteriaService createCriteriaService;
+    private readonly CriteriaService createCriteriaService;
 
     private readonly XmlConvertService xmlConvertService;
 
     public CreateCriteriaServiceTests()
     {
         xmlConvertService = Substitute.For<XmlConvertService>();
-        createCriteriaService = new CreateCriteriaServiceImp(xmlConvertService);
+        createCriteriaService = new CriteriaServiceImp(xmlConvertService);
     }
 
     [Fact]

@@ -30,7 +30,7 @@ public class Match
 
     public IEnumerable<ResultDetail> ResultDetails { get; set; }
 
-    public override bool Equals(object obj) => obj is Match match && match.MatchId == MatchId;
+    public override bool Equals(object obj) => obj is Match match && match.MatchId == MatchId && match.TypeId == TypeId;
 
-    public override int GetHashCode() => MatchId;
+    public override int GetHashCode() => HashCode.Combine(MatchId, TypeId);
 }
