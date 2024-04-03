@@ -29,7 +29,6 @@ public class BasketBallFantasyWorker : BackgroundService
 
         while (await timer.WaitForNextTickAsync(stoppingToken))
         {
-            //Console.WriteLine("run HandleAutoAsync");
             await HandleAutoAsync();
         }
     }

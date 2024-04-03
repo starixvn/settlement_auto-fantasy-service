@@ -41,16 +41,10 @@ public class CalcOSServiceImp : CalcOSService
 
     public async Task Settle(Match match, SettleCriteria settleCriteria)
     {
-        //update status
         await scaleOutSettleService.UpdateUnderSettlementFlag(settleCriteria.MatchId, 0, settleCriteria.Action);
-        //// update resultos
         await matchService.UpdateStatusResultOS(settleCriteria, MatchStatus.Waiting);
-        //matchinfo
         await UpdateMatchInfo(settleCriteria);
-
-        //log
         await WriteLog(match, settleCriteria);
-        //profile push
         ExecuteAllSiteDb(settleCriteria);
     }
 

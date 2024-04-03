@@ -15,7 +15,7 @@ public static class DependenceInjections
         service.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
         service.AddTransient<DirectFantasyController, DirectFantasyControllerImp>();
-        service.AddTransient<MatchService, MatchServiceImp>();
+        service.AddSingleton<MatchService, MatchServiceImp>();
         service.AddTransient<MatchSettlementHandler, MatchSettlementHandlerImp>();
         service.AddTransient<CalcService, CalcServiceImp>();
         service.AddTransient<RefundService, RefundServiceImp>();
@@ -24,7 +24,7 @@ public static class DependenceInjections
         service.AddTransient<CriteriaService, CriteriaServiceImp>();
         service.AddTransient<ResultDetailService, ResultDetailServiceImp>();
 
-        service.AddTransient<OSMatchService, OSMatchServiceImp>();
+        service.AddSingleton<OSMatchService, OSMatchServiceImp>();
         service.AddTransient<DirectOSFantasyController, DirectOSFantasyControllerImp>();
         service.AddTransient<OSMatchSettlementHandler, OSMatchSettlementHandlerImp>();
         service.AddTransient<RefundOSService, RefundOSServiceImp>();

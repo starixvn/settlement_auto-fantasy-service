@@ -22,9 +22,9 @@ public interface OSMatchService
 
 public class OSMatchServiceImp : OSMatchService
 {
-    private readonly object matchesLock = new();
+    private readonly object osMatchesLock = new();
 
-    public List<Match> PoolMatches { get; } = new();
+    public List<Match> PoolOsMatches { get; } = new();
 
     private readonly IDynamicRepository repository;
 
@@ -35,8 +35,7 @@ public class OSMatchServiceImp : OSMatchService
     public OSMatchServiceImp(
         IDynamicRepository repository,
         ICache cache,
-        IOptions<AppSettingsKey> appSettingsKey,
-        ResultDetailService resultDetailService)
+        IOptions<AppSettingsKey> appSettingsKey)
     {
         this.repository = repository;
         this.cache = cache;
@@ -45,23 +44,20 @@ public class OSMatchServiceImp : OSMatchService
 
     public void Remove(Match match)
     {
-        lock (matchesLock)
+        lock (osMatchesLock)
         {
-            PoolMatches.RemoveAll(m => m.MatchId == match.MatchId && m.TypeId == match.TypeId);
+            var count = PoolOsMatches.RemoveAll(m => m.MatchId == match.MatchId && m.TypeId == match.TypeId);
         }
     }
 
     public async Task<List<Match>> PeekNewMatch()
     {
         var fantasyMatches = await GetMatchesByLeagues();
-        LogServiceSentry.Warn($"MatchFantasy Get: {fantasyMatches.Count}");
-        lock (matchesLock)
+
+        lock (osMatchesLock)
         {
-            var newMatches = fantasyMatches.Except(PoolMatches).ToList();
-            PoolMatches.AddRange(newMatches);
-
-            LogServiceSentry.Warn($"NewMatchFantasy Get: {newMatches.Count}");
-
+            var newMatches = fantasyMatches.Except(PoolOsMatches).ToList();
+            PoolOsMatches.AddRange(newMatches);
             return newMatches;
         }
     }
