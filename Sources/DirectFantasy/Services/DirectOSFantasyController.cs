@@ -28,7 +28,7 @@ public class DirectOSFantasyControllerImp : DirectOSFantasyController
         var newMatches = (await matchService.PeekNewMatch())
             .ToList();
 
-        Console.WriteLine($"Count match: {newMatches.Count}");
+        //Console.WriteLine($"Count match: {newMatches.Count}");
 
         newMatches.ForEach(m =>
         {
