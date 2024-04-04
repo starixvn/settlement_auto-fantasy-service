@@ -19,6 +19,8 @@ public class SettleCriteria : NonQueryCommand
 
     public bool IsLeader { get; } = true;
 
+    public int? AutoType { get; set; }
+
     public bool IsAuto { get; } = true;
 
     public string AutoSourceInfo { get; set; }

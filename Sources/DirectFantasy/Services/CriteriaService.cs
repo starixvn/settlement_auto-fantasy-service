@@ -142,7 +142,8 @@ public class CriteriaServiceImp : CriteriaService
         {
             MatchId = match.MatchId,
             Action = match.Action,
-            SelectedResources = selectedResources
+            SelectedResources = selectedResources,
+            AutoType = match.IsRefund ? null : 2// direct
         };
     }
 }
