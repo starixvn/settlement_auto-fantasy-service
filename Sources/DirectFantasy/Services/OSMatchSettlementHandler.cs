@@ -59,7 +59,6 @@ public class OSMatchSettlementHandlerImp : OSMatchSettlementHandler
         }
         catch (AppException ex)
         {
-            LogServiceSentry.Error(ex.Message, ex);
             await logService.WriteLog(match, ex.Description);
             await matchService.UpdateStatusResultOS(match, MatchStatus.Failed);
         }
