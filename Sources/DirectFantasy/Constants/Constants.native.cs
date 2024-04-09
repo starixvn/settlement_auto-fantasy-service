@@ -6,7 +6,9 @@ public static class ResourceId
 
     public const string Final = "00";
 
-    public static readonly string[] Basketball = ["Q1", "Q2", "Q3", "Q4", "Q5", "00", "01"];
+    public const string Ot = "OT";
+
+    public static readonly string[] Basketball = ["Q1", "Q2", "Q3", "Q4", "00", "01"];
 }
 
 public static class SettleType

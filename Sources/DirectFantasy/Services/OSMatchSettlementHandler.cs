@@ -93,8 +93,6 @@ public class OSMatchSettlementHandlerImp : OSMatchSettlementHandler
 
     public async Task HandleCalc(Match match)
     {
-        LogServiceSentry.Warn($"Handle calc {match.MatchId}");
-
         var relatedMatch = await matchService.GetRelatedMatches(match.MatchId);
 
         validationMatchService.ValidateRelatedMatch(relatedMatch);
