@@ -14,6 +14,8 @@ public class ResultOSUpdateCriteria : NonQueryCommand
 
     public int StatusId { get; set; }
 
+    public string Remark { get; set; }
+
     public int ErrCode { get; set; }
 
     public string ErrMsg { get; set; }

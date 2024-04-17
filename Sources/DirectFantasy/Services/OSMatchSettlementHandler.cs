@@ -60,7 +60,7 @@ public class OSMatchSettlementHandlerImp : OSMatchSettlementHandler
         catch (AppException ex)
         {
             await logService.WriteLog(match, ex.Description);
-            await matchService.UpdateStatusResultOS(match, MatchStatus.Failed);
+            await matchService.UpdateStatusResultOS(match, MatchStatus.Failed, ex.Description);
         }
         finally
         {
@@ -108,8 +108,9 @@ public class OSMatchSettlementHandlerImp : OSMatchSettlementHandler
             return;
         }
 
-        await logService.WriteLog(match, $"Failed Basketball Fantasy Payout: {validateResult.ErrMsg}");
-        await matchService.UpdateStatusResultOS(settledCriteria, MatchStatus.Failed);
+        var errorMsg = $"Failed Basketball Fantasy Payout: {validateResult.ErrMsg}";
+        await logService.WriteLog(match, errorMsg);
+        await matchService.UpdateStatusResultOS(settledCriteria, MatchStatus.Failed, errorMsg);
     }
 
     public async Task HandleRefund(Match match, SettleCriteria settledCriteria)
