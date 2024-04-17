@@ -20,7 +20,7 @@ public class CalcServiceTests
 
     private readonly CalcService calcService;
 
-    private readonly CreateCriteriaService createCriteriaService;
+    private readonly CriteriaService createCriteriaService;
 
     public CalcServiceTests()
     {
@@ -28,7 +28,7 @@ public class CalcServiceTests
         repository = Substitute.For<IDynamicRepository>();
         mapper = Substitute.For<IMapper>();
         logService = Substitute.For<LogService>();
-        createCriteriaService = Substitute.For<CreateCriteriaService>();
+        createCriteriaService = Substitute.For<CriteriaService>();
 
         var settings = new AppSettingsKey()
         {

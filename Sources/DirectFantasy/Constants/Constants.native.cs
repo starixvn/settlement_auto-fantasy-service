@@ -5,6 +5,10 @@ public static class ResourceId
     public const string Halftime = "01";
 
     public const string Final = "00";
+
+    public const string Ot = "OT";
+
+    public static readonly string[] Basketball = ["Q1", "Q2", "Q3", "Q4", "00", "01"];
 }
 
 public static class SettleType
@@ -17,6 +21,7 @@ public static class SettleType
 public static class CacheKey
 {
     public const string LeagueId = "Settlement-AutoPayout-AutoInstant-LeagueId";
+    public const string OsLeagueId = "Settlement-AutoPayoutOtherSport-LeagueId";
 }
 
 public static class Environment
@@ -29,7 +34,6 @@ public static class Environment
 public static class MatchStatus
 {
     public const int Waiting = 1;
-
     public const int Failed = 3;
 }
 
@@ -54,4 +58,9 @@ public static class SpName
 {
     public const string PayoutPush = "NAP_Admin_Settlement_1_AutoPayout_Push";
     public const string RefundPush = "NAP_Admin_Settlement_Refund_1_Push";
+}
+
+public static class EventStatus
+{
+    public const string Completed = "completed";
 }

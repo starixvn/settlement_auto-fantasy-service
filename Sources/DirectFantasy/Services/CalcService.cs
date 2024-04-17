@@ -21,7 +21,7 @@ public class CalcServiceImp : CalcService
 
     private readonly LogService logService;
 
-    private readonly CreateCriteriaService createCriteriaService;
+    private readonly CriteriaService createCriteriaService;
 
     private readonly AppSettingsKey appSettingsKey;
 
@@ -30,7 +30,7 @@ public class CalcServiceImp : CalcService
         IMapper mapper,
         IOptions<AppSettingsKey> appSettingsKey,
         LogService logService,
-        CreateCriteriaService createCriteriaService)
+        CriteriaService createCriteriaService)
     {
         this.scaleOutService = scaleOutService;
         this.repository = repository;
