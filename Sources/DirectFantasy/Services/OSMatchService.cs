@@ -15,9 +15,9 @@ public interface OSMatchService
 
     void Remove(Match match);
 
-    Task UpdateStatusResultOS(SettleCriteria settleCriteria, int status);
+    Task UpdateStatusResultOS(SettleCriteria settleCriteria, int status, string remark = "");
 
-    Task UpdateStatusResultOS(Match match, int status);
+    Task UpdateStatusResultOS(Match match, int status, string remark = "");
 }
 
 public class OSMatchServiceImp : OSMatchService
@@ -62,24 +62,26 @@ public class OSMatchServiceImp : OSMatchService
         }
     }
 
-    public async Task UpdateStatusResultOS(SettleCriteria settleCriteria, int status)
+    public async Task UpdateStatusResultOS(SettleCriteria settleCriteria, int status, string remark = "")
     {
         var criteria = new ResultOSUpdateCriteria
         {
             MatchId = settleCriteria.MatchId,
             SelectedResources = settleCriteria.SelectedResources,
             StatusId = status,
+            Remark = remark
         };
 
         await repository.ExecuteAsync(criteria);
     }
 
-    public async Task UpdateStatusResultOS(Match match, int status)
+    public async Task UpdateStatusResultOS(Match match, int status, string remark = "")
     {
         var criteria = new ResultOSUpdateCriteria
         {
             MatchId = match.MatchId,
             StatusId = status,
+            Remark = remark
         };
 
         await repository.ExecuteAsync(criteria);

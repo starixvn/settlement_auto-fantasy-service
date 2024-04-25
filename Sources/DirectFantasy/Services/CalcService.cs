@@ -8,7 +8,7 @@ public interface CalcService
 {
     Task Settle(Match match);
 
-    Task InsertAutoPayoutResult(Match match, int sourceId, int statusId);
+    Task InsertAutoPayoutResult(Match match, int sourceId, int statusId, string remark = "");
 }
 
 public class CalcServiceImp : CalcService
@@ -55,9 +55,9 @@ public class CalcServiceImp : CalcService
         ExecuteAllSiteDb(settleCriteria);
     }
 
-    public async Task InsertAutoPayoutResult(Match match, int sourceId, int statusId)
+    public async Task InsertAutoPayoutResult(Match match, int sourceId, int statusId, string remark = "")
     {
-        var criteria = createCriteriaService.CreateAutoPayoutResult(match, sourceId, statusId);
+        var criteria = createCriteriaService.CreateAutoPayoutResult(match, sourceId, statusId, remark);
 
         await repository.ExecuteAsync(criteria);
     }
