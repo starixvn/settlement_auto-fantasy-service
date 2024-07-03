@@ -1,9 +1,7 @@
-﻿using System;
-using DirectFantasy.Constants;
+﻿using DirectFantasy.Constants;
 using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Exceptions;
 using DirectFantasy.Models;
-using LogServiceSentry = Fanex.Logging.LogService;
 
 namespace DirectFantasy.Services;
 
@@ -12,34 +10,15 @@ public interface OSMatchSettlementHandler
     Task Progress(Match match);
 }
 
-public class OSMatchSettlementHandlerImp : OSMatchSettlementHandler
-{
-    private readonly OSMatchService matchService;
-    private readonly ValidationMatchService validationMatchService;
-    private readonly CriteriaService criteriaService;
-    private readonly CalcOSService calcOSService;
-    private readonly LogService logService;
-    private readonly RefundOSService refundOSService;
-    private readonly ResultDetailService resultDetailService;
-
-    public OSMatchSettlementHandlerImp(
-        OSMatchService matchService,
+public class OSMatchSettlementHandlerImp(OSMatchService matchService,
         CriteriaService criteriaService,
         ValidationMatchService validationMatchService,
         CalcOSService calcOSService,
         LogService logService,
         RefundOSService refundOSService,
         ResultDetailService resultDetailService)
-    {
-        this.matchService = matchService;
-        this.criteriaService = criteriaService;
-        this.validationMatchService = validationMatchService;
-        this.calcOSService = calcOSService;
-        this.logService = logService;
-        this.refundOSService = refundOSService;
-        this.resultDetailService = resultDetailService;
-    }
-
+    : OSMatchSettlementHandler
+{
     public async Task Progress(Match match)
     {
         if (match.IsRefund)
@@ -90,7 +69,7 @@ public class OSMatchSettlementHandlerImp : OSMatchSettlementHandler
         }
     }
 
-    public async Task HandleCalc(Match match)
+    private async Task HandleCalc(Match match)
     {
         var relatedMatch = await matchService.GetRelatedMatches(match.MatchId);
 
@@ -113,7 +92,7 @@ public class OSMatchSettlementHandlerImp : OSMatchSettlementHandler
         await matchService.UpdateStatusResultOS(settledCriteria, MatchStatus.Failed, errorMsg);
     }
 
-    public async Task HandleRefund(Match match, SettleCriteria settledCriteria)
+    private async Task HandleRefund(Match match, SettleCriteria settledCriteria)
     {
         var validateResult = await validationMatchService.ValidateEventTicketOS(settledCriteria);
 

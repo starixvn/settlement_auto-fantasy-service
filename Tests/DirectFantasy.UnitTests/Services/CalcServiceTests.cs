@@ -107,12 +107,16 @@ public class CalcServiceTests
         mapper.Map<UpdateMatchInfoRequest>(Arg.Any<MatchSettleCriteria>()).Returns(matchInfoRequest);
 
         createCriteriaService.CreateMatchSettleCriteria(match).Returns(new MatchSettleCriteria());
+        createCriteriaService.CreateAutoPayoutResult(match, Arg.Any<int>(), Arg.Any<int>()).Returns(new AddAutoPayoutResultCriteria());
+        createCriteriaService.CreateLogCalcCriteria(match).Returns(new InsertLogCriteria());
 
         await calcService.Settle(match);
 
         await scaleOutService.Received(1).UpdateUnderSettlementFlag(match.MatchId, 0, match.Action);
 
         await repository.Received(1).ExecuteAsync(Arg.Any<AddAutoPayoutResultCriteria>());
+
+        await repository.Received(1).ExecuteAsync(Arg.Any<InsertLogCriteria>());
 
         await scaleOutService.Received(1).UpdateMatchInfo(Arg.Is<UpdateMatchInfoRequest>(request =>
             request.MatchId == match.MatchId &&

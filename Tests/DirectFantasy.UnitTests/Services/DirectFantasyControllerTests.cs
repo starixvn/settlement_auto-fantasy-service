@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using DirectFantasy.Models;
+﻿using DirectFantasy.Models;
 using DirectFantasy.Services;
 using NSubstitute;
 
@@ -21,19 +20,16 @@ public class DirectFantasyControllerTests
     }
 
     [Fact]
-    public async Task ProcessAsync_HasMatches_InvokeProcessMethod()
+    public async Task ProcessAsync_ShouldCallMatchSettlementHandlerProgressForEachMatch()
     {
         // Arrange
-        var fixture = new Fixture();
-        var matches = fixture.CreateMany<Match>(1).ToList();
-        matches.ForEach(m => m.IsChecking = false);
-
-        matchService.PeekNewMatch().Returns(matches);
+        var newMatches = new List<Match> { new(), new(), new() };
+        matchService.PeekNewMatch().Returns(Task.FromResult(newMatches));
 
         // Act
         await controller.ProcessAsync();
 
         // Assert
-        await matchSettlementHandler.Received().Progress(Arg.Any<Match>());
+        await matchSettlementHandler.Received(newMatches.Count).Progress(Arg.Any<Match>());
     }
 }

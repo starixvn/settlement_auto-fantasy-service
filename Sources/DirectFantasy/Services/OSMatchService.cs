@@ -3,7 +3,6 @@ using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Models;
 using Fanex.Caching;
 using Environment = DirectFantasy.Constants.Environment;
-using LogServiceSentry = Fanex.Logging.LogService;
 
 namespace DirectFantasy.Services;
 
@@ -20,33 +19,22 @@ public interface OSMatchService
     Task UpdateStatusResultOS(Match match, int status, string remark = "");
 }
 
-public class OSMatchServiceImp : OSMatchService
+public class OSMatchServiceImp(IDynamicRepository repository,
+        ICache cache,
+        IOptions<AppSettingsKey> appSettingsKey)
+    : OSMatchService
 {
     private readonly object osMatchesLock = new();
 
     public List<Match> PoolOsMatches { get; } = new();
 
-    private readonly IDynamicRepository repository;
-
-    private readonly ICache cache;
-
-    private readonly AppSettingsKey appSettingsKey;
-
-    public OSMatchServiceImp(
-        IDynamicRepository repository,
-        ICache cache,
-        IOptions<AppSettingsKey> appSettingsKey)
-    {
-        this.repository = repository;
-        this.cache = cache;
-        this.appSettingsKey = appSettingsKey.Value;
-    }
+    private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
 
     public void Remove(Match match)
     {
         lock (osMatchesLock)
         {
-            var count = PoolOsMatches.RemoveAll(m => m.MatchId == match.MatchId && m.TypeId == match.TypeId);
+            PoolOsMatches.RemoveAll(m => m.MatchId == match.MatchId && m.TypeId == match.TypeId);
         }
     }
 

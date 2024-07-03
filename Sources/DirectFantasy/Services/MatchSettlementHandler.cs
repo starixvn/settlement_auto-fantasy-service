@@ -9,28 +9,14 @@ public interface MatchSettlementHandler
     Task Progress(Match match);
 }
 
-public class MatchSettlementHandlerImp : MatchSettlementHandler
-{
-    private readonly MatchService matchService;
-    private readonly ValidationMatchService validationMatchService;
-    private readonly CalcService settleService;
-    private readonly RefundService refundService;
-    private readonly LogService logService;
 
-    public MatchSettlementHandlerImp(
-        MatchService fantasyMatchService,
+public class MatchSettlementHandlerImp(MatchService fantasyMatchService,
         CalcService settleService,
         LogService logService,
         RefundService refundService,
         ValidationMatchService validationMatchService)
-    {
-        this.matchService = fantasyMatchService;
-        this.settleService = settleService;
-        this.logService = logService;
-        this.refundService = refundService;
-        this.validationMatchService = validationMatchService;
-    }
-
+    : MatchSettlementHandler
+{
     public async Task Progress(Match match)
     {
         if (match.IsRefund)
@@ -45,7 +31,7 @@ public class MatchSettlementHandlerImp : MatchSettlementHandler
     private async Task ProgressCalc(Match match)
     {
         await HandleCalc(match);
-        matchService.Remove(match);
+        fantasyMatchService.Remove(match);
     }
 
     private async Task ProgressRefund(Match match)
@@ -60,11 +46,11 @@ public class MatchSettlementHandlerImp : MatchSettlementHandler
         catch (MarkedTicketException exception)
         {
             await logService.WriteLog(match, exception.Description);
-            await matchService.UpdateMatchStatus(match, MatchStatus.Failed);
+            await fantasyMatchService.UpdateMatchStatus(match, MatchStatus.Failed);
         }
         finally
         {
-            matchService.Remove(match);
+            fantasyMatchService.Remove(match);
         }
     }
 
@@ -95,6 +81,6 @@ public class MatchSettlementHandlerImp : MatchSettlementHandler
         }
 
         await logService.WriteLog(match, $"Auto Refund failed: {result.ErrMsg}");
-        await matchService.UpdateMatchRemark(match, result.ErrMsg, MatchStatus.Failed);
+        await fantasyMatchService.UpdateMatchRemark(match, result.ErrMsg, MatchStatus.Failed);
     }
 }

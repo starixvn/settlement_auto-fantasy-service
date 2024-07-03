@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace DirectFantasy.Criteria.OtherSports;
 
-namespace DirectFantasy.Criteria.OtherSports;
-
-internal class ResultRefundOSInsCriteria : NonQueryCommand
+public class ResultRefundOSInsCriteria : NonQueryCommand
 {
     public int MatchId { get; set; }
 

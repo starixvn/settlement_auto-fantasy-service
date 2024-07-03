@@ -11,34 +11,15 @@ public interface CalcService
     Task InsertAutoPayoutResult(Match match, int sourceId, int statusId, string remark = "");
 }
 
-public class CalcServiceImp : CalcService
-{
-    private readonly ScaleOutSettleService scaleOutService;
-
-    private readonly IDynamicRepository repository;
-
-    private readonly IMapper mapper;
-
-    private readonly LogService logService;
-
-    private readonly CriteriaService createCriteriaService;
-
-    private readonly AppSettingsKey appSettingsKey;
-
-    public CalcServiceImp(ScaleOutSettleService scaleOutService,
+public class CalcServiceImp(ScaleOutSettleService scaleOutService,
         IDynamicRepository repository,
         IMapper mapper,
         IOptions<AppSettingsKey> appSettingsKey,
         LogService logService,
         CriteriaService createCriteriaService)
-    {
-        this.scaleOutService = scaleOutService;
-        this.repository = repository;
-        this.mapper = mapper;
-        this.appSettingsKey = appSettingsKey.Value;
-        this.logService = logService;
-        this.createCriteriaService = createCriteriaService;
-    }
+    : CalcService
+{
+    private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
 
     public async Task Settle(Match match)
     {
@@ -82,7 +63,7 @@ public class CalcServiceImp : CalcService
     private async Task WriteLog(Match match)
     {
         var insertLogCriteria = createCriteriaService.CreateLogCalcCriteria(match);
-        await logService.WriteLogResettle(insertLogCriteria);
+        await repository.ExecuteAsync(insertLogCriteria);
 
         var message = GenerateMessage(match);
         await logService.WriteLogDirectly(match.MatchId, message);
