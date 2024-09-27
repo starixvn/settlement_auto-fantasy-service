@@ -2,6 +2,7 @@
 
 namespace DirectFantasy.Exceptions;
 
+[Serializable]
 public class AppException : Exception
 {
     public AppException()
@@ -18,6 +19,7 @@ public class AppException : Exception
     {
     }
 
+    [Obsolete(DiagnosticId = "SYSLIB0051")]
     protected AppException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {

@@ -2,8 +2,6 @@
 
 namespace DirectFantasy.Criteria;
 
-#nullable disable
-
 public class SettleLogCriteria : NonQueryCommand
 {
     public int UserId { get; set; }

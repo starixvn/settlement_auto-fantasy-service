@@ -12,16 +12,15 @@ namespace DirectFantasy.UnitTests.Services
 {
     public class OSMatchServiceTests
     {
-        private IDynamicRepository repository;
-        private ICache cache;
-        private IOptions<AppSettingsKey> appSettingsKey;
+        private readonly IDynamicRepository repository;
+        private readonly ICache cache;
         private OSMatchServiceImp matchService;
 
         public OSMatchServiceTests()
         {
             repository = Substitute.For<IDynamicRepository>();
             cache = Substitute.For<ICache>();
-            appSettingsKey = Options.Create(new AppSettingsKey());
+            var appSettingsKey = Options.Create(new AppSettingsKey());
             matchService = new OSMatchServiceImp(repository, cache, appSettingsKey);
         }
 

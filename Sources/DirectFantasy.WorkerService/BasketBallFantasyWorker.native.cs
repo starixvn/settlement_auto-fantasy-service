@@ -16,7 +16,7 @@ public class BasketBallFantasyWorker(DirectOSFantasyController directFantasyCont
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using PeriodicTimer timer = new(TimeSpan.FromMilliseconds(configuration.GetValue<int>("ServiceInterval", 3000)));
+        using PeriodicTimer timer = new(TimeSpan.FromMilliseconds(configuration.GetValue("ServiceInterval", 3000)));
 
         while (await timer.WaitForNextTickAsync(stoppingToken))
         {

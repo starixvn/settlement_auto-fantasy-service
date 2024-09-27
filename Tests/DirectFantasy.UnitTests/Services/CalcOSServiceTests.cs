@@ -13,17 +13,16 @@ namespace DirectFantasy.UnitTests.Services
     {
         private readonly ScaleOutSettleService scaleOutSettleService;
         private readonly IDynamicRepository repository;
-        private readonly IOptions<AppSettingsKey> appSettingsKey;
         private readonly LogService logService;
         private readonly OSMatchService matchOSService;
         private readonly MatchService matchService;
 
-        private readonly CalcOSService calcOSService;
+        private readonly CalcOSServiceImp calcOSService;
 
         private readonly AppSettingsKey settings = new()
         {
             EnvironmentName = "Local",
-            SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
+            SiteDbServer = ["DBTXN", "DBSID01", "DBSID02"]
         };
 
         public CalcOSServiceTests()
