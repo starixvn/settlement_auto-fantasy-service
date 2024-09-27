@@ -48,25 +48,21 @@ public class ResultDetailServiceImp : ResultDetailService
     private List<ResultTemp> SumScore(List<RelatedMatch> relatedMatches, string[] teamIds)
     {
         var homes = relatedMatches
-            .Where(x => teamIds.Contains(x.HomeId.ToString()))
-            .Select(x => x.Results)
-            .ToList();
+         .Where(x => teamIds.Contains(x.HomeId.ToString()))
+         .Select(x => x.Results);
 
         var resultsOfHome = homes
             .SelectMany(x => x)
             .GroupBy(x => x.ResourceId)
-            .Select(group => new ResultTemp(group.Key, group.Sum(x => int.TryParse(x.HomeValue, out int value) ? value : 0)))
-            .ToList();
+            .Select(group => new ResultTemp(group.Key, group.Sum(x => int.TryParse(x.HomeValue, out int value) ? value : 0)));
 
         var aways = relatedMatches
             .Where(x => teamIds.Contains(x.AwayId.ToString()))
-            .Select(x => x.Results)
-            .ToList();
+            .Select(x => x.Results);
 
         var resultsOfAway = aways.SelectMany(x => x)
              .GroupBy(x => x.ResourceId)
-             .Select(group => new ResultTemp(group.Key, group.Sum(x => int.TryParse(x.AwayValue, out int value) ? value : 0)))
-             .ToList();
+             .Select(group => new ResultTemp(group.Key, group.Sum(x => int.TryParse(x.AwayValue, out int value) ? value : 0)));
 
         var results = resultsOfHome
             .Concat(resultsOfAway)

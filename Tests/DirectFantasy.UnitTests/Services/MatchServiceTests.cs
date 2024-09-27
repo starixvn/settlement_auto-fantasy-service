@@ -3,8 +3,8 @@ using DirectFantasy.Criteria;
 using DirectFantasy.Models;
 using DirectFantasy.Services;
 using Fanex.Caching;
-using Fanex.Caching.Redis;
 using Fanex.Data.Repository;
+using Fanex.Settlement.ScaleOut.Services;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using Environment = DirectFantasy.Constants.Environment;
@@ -15,16 +15,14 @@ public class MatchServiceTests
 {
     private readonly IDynamicRepository repository;
     private readonly ICache cache;
+    private readonly ScaleOutSettleService scaleOutSettleService;
     private MatchServiceImp matchService;
 
     public MatchServiceTests()
     {
         repository = Substitute.For<IDynamicRepository>();
-        cache = new RedisCache(new RedisCacheOptions
-        {
-            ConnectionString = "10.18.200.131:16379,password=foo1@bared,defaultDatabase=13",
-            ApplicationName = "Settlement-LOCAL"
-        });
+        cache = Substitute.For<ICache>();
+        scaleOutSettleService = Substitute.For<ScaleOutSettleService>();
 
         var settings = new AppSettingsKey()
         {
@@ -32,7 +30,7 @@ public class MatchServiceTests
             SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
         };
         var appSettingsKey = Options.Create(settings);
-        matchService = new MatchServiceImp(repository, cache, appSettingsKey);
+        matchService = new MatchServiceImp(repository, cache, appSettingsKey, scaleOutSettleService);
     }
 
     [Fact]
@@ -168,14 +166,12 @@ public class MatchServiceTests
         var settings = new AppSettingsKey()
         {
             EnvironmentName = Environment.Uat,
-            SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
+            SiteDbServer = new List<string> { "DBTXN" }
         };
         var appSettingsKey = Options.Create(settings);
-        matchService = new MatchServiceImp(repository, cache, appSettingsKey);
+        matchService = new MatchServiceImp(repository, cache, appSettingsKey, scaleOutSettleService);
 
-        const int cacheExpiredInDays = 1;
-        var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(cacheExpiredInDays));
-        await cache.SetAsync(CacheKey.LeagueId, 1, cachePolicy);
+        cache.TryGetAsync<string>(CacheKey.LeagueId).Returns((true, "1"));
 
         // Act
         await matchService.PeekNewMatch();
@@ -208,13 +204,11 @@ public class MatchServiceTests
         var settings = new AppSettingsKey()
         {
             EnvironmentName = Environment.Pro,
-            SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
+            SiteDbServer = new List<string> { "DBTXN" }
         };
         var appSettingsKey = Options.Create(settings);
-        matchService = new MatchServiceImp(repository, cache, appSettingsKey);
-        const int cacheExpiredInDays = 1;
-        var cachePolicy = new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(cacheExpiredInDays));
-        await cache.SetAsync(CacheKey.LeagueId, 1, cachePolicy);
+        matchService = new MatchServiceImp(repository, cache, appSettingsKey, scaleOutSettleService);
+        cache.TryGetAsync<string>(CacheKey.LeagueId).Returns((true, "1"));
 
         // Act
         await matchService.PeekNewMatch();

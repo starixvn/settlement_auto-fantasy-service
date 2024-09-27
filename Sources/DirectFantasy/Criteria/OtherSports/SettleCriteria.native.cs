@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fanex.Settlement.ScaleOut.Constants;
-
-namespace DirectFantasy.Criteria.OtherSports;
+﻿namespace DirectFantasy.Criteria.OtherSports;
 
 public class SettleCriteria : NonQueryCommand
 {

@@ -1,5 +1,4 @@
-﻿using System.Resources;
-using DirectFantasy.Constants;
+﻿using DirectFantasy.Constants;
 using DirectFantasy.Criteria;
 using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Models;
@@ -20,16 +19,9 @@ public interface CriteriaService
     SettleCriteria CreateOSSettleCriteria(Match match);
 }
 
-public class CriteriaServiceImp : CriteriaService
+public class CriteriaServiceImp(XmlConvertService xmlConvertService) : CriteriaService
 {
     private const int Soccer = 1;
-
-    private readonly XmlConvertService xmlConvertService;
-
-    public CriteriaServiceImp(XmlConvertService xmlConvertService)
-    {
-        this.xmlConvertService = xmlConvertService;
-    }
 
     public MatchSettleCriteria CreateMatchSettleCriteria(Match match)
     {

@@ -44,6 +44,7 @@ public class CreateCriteriaServiceTests
             StatusId = statusId,
             HomeValue = 2,
             AwayValue = 1,
+            Remark = string.Empty
         };
         AssertExtension.AreEqual(expected, value);
     }
@@ -73,6 +74,7 @@ public class CreateCriteriaServiceTests
             StatusId = statusId,
             HomeValue = 4,
             AwayValue = 2,
+            Remark = string.Empty
         };
         AssertExtension.AreEqual(expected, value);
     }

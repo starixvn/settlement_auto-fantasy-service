@@ -1,4 +1,5 @@
 ﻿using DirectFantasy.Criteria;
+using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Models;
 
 namespace DirectFantasy.Services;
@@ -9,18 +10,11 @@ public interface LogService
 
     Task WriteLogDirectly(int matchId, string message);
 
-    Task WriteLogResettle(InsertLogCriteria criteria);
+    Task WriteLogSettle(Match match, SettleCriteria settleCriteria);
 }
 
-public class LogServiceImp : LogService
+public class LogServiceImp(IDynamicRepository repository) : LogService
 {
-    private readonly IDynamicRepository repository;
-
-    public LogServiceImp(IDynamicRepository repository)
-    {
-        this.repository = repository;
-    }
-
     public async Task WriteLog(Match match, string message)
     {
         var criteria = new SettleLogCriteria
@@ -38,6 +32,22 @@ public class LogServiceImp : LogService
         await repository.ExecuteAsync(criteria);
     }
 
+    public async Task WriteLogSettle(Match match, SettleCriteria settleCriteria)
+    {
+        var insertLogCriteria = new InsertLogCriteria
+        {
+            MatchId = settleCriteria.MatchId,
+            Action = settleCriteria.Action,
+            SelectedResources = settleCriteria.SelectedResources,
+            SportType = match.SportType,
+        };
+
+        await repository.ExecuteAsync(insertLogCriteria);
+
+        var message = GenerateMessage(match, settleCriteria);
+        await WriteLogDirectly(match.MatchId, message);
+    }
+
     public async Task WriteLogDirectly(int matchId, string message)
     {
         var criteria = new LogDirectlyCriteria
@@ -49,8 +59,9 @@ public class LogServiceImp : LogService
         await repository.ExecuteAsync(criteria);
     }
 
-    public async Task WriteLogResettle(InsertLogCriteria criteria)
+    private static string GenerateMessage(Match match, SettleCriteria settleCriteria)
     {
-        await repository.ExecuteAsync(criteria);
+        var score = $"results: {settleCriteria.SelectedResources}";
+        return $"NAP: Auto Fantasy Basketball Calculate({match.Action}) for matchId: {match.MatchId} {score}";
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Security.AccessControl;
-using DirectFantasy.Constants;
+﻿using DirectFantasy.Constants;
 using DirectFantasy.Criteria;
 using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Models;
@@ -17,26 +16,18 @@ public interface MatchService
     Task UpdateMatchRemark(Match match, string remark, int statusId);
 
     Task UpdateMatchStatus(Match match, int statusId);
+
+    Task UpdateMatchInfo(SettleCriteria criteria);
 }
 
-public class MatchServiceImp : MatchService
+public class MatchServiceImp(IDynamicRepository repository, ICache cache, IOptions<AppSettingsKey> appSettingsKey, ScaleOutSettleService scaleOutSettleService)
+    : MatchService
 {
     private readonly object matchesLock = new();
 
     public List<Match> PoolMatches { get; } = new();
 
-    private readonly IDynamicRepository repository;
-
-    private readonly ICache cache;
-
-    private readonly AppSettingsKey appSettingsKey;
-
-    public MatchServiceImp(IDynamicRepository repository, ICache cache, IOptions<AppSettingsKey> appSettingsKey)
-    {
-        this.repository = repository;
-        this.cache = cache;
-        this.appSettingsKey = appSettingsKey.Value;
-    }
+    private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
 
     public async Task UpdateMatchStatus(Match match, int statusId)
     {
@@ -95,16 +86,30 @@ public class MatchServiceImp : MatchService
         {
             Environment.Pro => leagueIds.Length > 0
                 ? fantasyMatches.Where(m => !leagueIds.Contains(m.LeagueId.ToString())).ToList()
-                : fantasyMatches,
+                : fantasyMatches.ToList(),
             Environment.Uat => fantasyMatches.Where(m => leagueIds.Contains(m.LeagueId.ToString())).ToList(),
-            _ => fantasyMatches
+            _ => fantasyMatches.ToList()
         };
     }
 
-    private async Task<List<Match>> GetFantasyMatches()
+    private async Task<IEnumerable<Match>> GetFantasyMatches()
     {
         var criteria = new GetFantasyMatchesCriteria();
         var fantasyMatches = await repository.FetchAsync<Match>(criteria);
-        return fantasyMatches.ToList();
+        return fantasyMatches;
+    }
+
+    public async Task UpdateMatchInfo(SettleCriteria criteria)
+    {
+        var requestUpdateInfo = new UpdateMatchInfoRequest
+        {
+            Action = criteria.Action,
+            AdminId = criteria.AdminId,
+            MatchId = criteria.MatchId,
+            SelectedResources = criteria.SelectedResources,
+            IsAuto = criteria.IsAuto,
+        };
+
+        await scaleOutSettleService.UpdateMatchInfo(requestUpdateInfo);
     }
 }

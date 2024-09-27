@@ -1,5 +1,5 @@
-﻿using DirectFantasy.Models;
-using DirectFantasy.Criteria;
+﻿using DirectFantasy.Criteria;
+using DirectFantasy.Models;
 
 namespace DirectFantasy.Services;
 
@@ -60,7 +60,7 @@ public class RefundServiceImp : RefundService
     private async Task WriteLog(Match match)
     {
         var insertLogCriteria = createCriteriaService.CreateLogRefundCriteria(match);
-        await logService.WriteLogResettle(insertLogCriteria);
+        await repository.ExecuteAsync(insertLogCriteria);
 
         var message = $"NAP: Auto Calculate {match.Action} for matchId:{match.MatchId} score FT: 0-0 HT: 0-0";
         await logService.WriteLogDirectly(match.MatchId, message);

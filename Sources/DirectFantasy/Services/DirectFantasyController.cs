@@ -5,17 +5,9 @@ public interface DirectFantasyController
     Task ProcessAsync();
 }
 
-public class DirectFantasyControllerImp : DirectFantasyController
+public class DirectFantasyControllerImp(MatchSettlementHandler matchSettlementHandler, MatchService matchService)
+    : DirectFantasyController
 {
-    private readonly MatchSettlementHandler matchSettlementHandler;
-    private readonly MatchService matchService;
-
-    public DirectFantasyControllerImp(MatchSettlementHandler matchSettlementHandler, MatchService matchService)
-    {
-        this.matchSettlementHandler = matchSettlementHandler;
-        this.matchService = matchService;
-    }
-
     public async Task ProcessAsync()
     {
         var newMatches = (await matchService.PeekNewMatch())

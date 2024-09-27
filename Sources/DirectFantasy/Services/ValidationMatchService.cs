@@ -19,23 +19,13 @@ public interface ValidationMatchService
     Task<Result> ValidateEventTicketOS(SettleCriteria settleCriteria);
 }
 
-public class ValidationMatchServiceImp : ValidationMatchService
-{
-    private readonly AppSettingsKey appSettingsKey;
-    private readonly IDynamicRepository repository;
-    private readonly IMapper mapper;
-    private readonly GeneralService generalService;
-
-    public ValidationMatchServiceImp(IOptions<AppSettingsKey> appSettingsKey,
+public class ValidationMatchServiceImp(IOptions<AppSettingsKey> appSettingsKey,
         IDynamicRepository repository,
         IMapper mapper,
         GeneralService generalService)
-    {
-        this.appSettingsKey = appSettingsKey.Value;
-        this.repository = repository;
-        this.mapper = mapper;
-        this.generalService = generalService;
-    }
+    : ValidationMatchService
+{
+    private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
 
     public async Task<Result> ValidateEventTicket(Match match)
     {
@@ -89,11 +79,11 @@ public class ValidationMatchServiceImp : ValidationMatchService
         }
     }
 
-    public void ValidateRelatedMatch(FantasyMatch fantasyMatch)
+    public void ValidateRelatedMatch(FantasyMatch match)
     {
-        ValidateInsufficient(fantasyMatch);
-        ValidateHoldStatus(fantasyMatch);
-        ValidateCalculatedMatch(fantasyMatch);
+        ValidateInsufficient(match);
+        ValidateHoldStatus(match);
+        ValidateCalculatedMatch(match);
     }
 
     private void ValidateCalculatedMatch(FantasyMatch fantasyMatch)
@@ -116,11 +106,14 @@ public class ValidationMatchServiceImp : ValidationMatchService
             .Concat(awayTeamIds)
             .Any(x =>
             {
-                var exitsMatch = fantasyMatch.RelatedMatches.FirstOrDefault(m => m.HomeId == int.Parse(x) || m.AwayId == int.Parse(x));
+                var exitsMatch = fantasyMatch.RelatedMatches.Find(m => m.HomeId == int.Parse(x) || m.AwayId == int.Parse(x));
                 return exitsMatch is null;
             });
 
-        if (notExistsMatch) throw new RelatedMatchesInsufficientException();
+        if (notExistsMatch)
+        {
+            throw new RelatedMatchesInsufficientException();
+        }
     }
 
     private void ValidateHoldStatus(FantasyMatch fantasyMatch)
@@ -133,9 +126,9 @@ public class ValidationMatchServiceImp : ValidationMatchService
 
     private void VerifyHoldStatus(RemarkSettingModel remark)
     {
-        bool[] conditionsToCheck = { remark.IsMtdHold, remark.IsUndecided, remark.IsPending, remark.IsUnderSettle, remark.IsKeyHold };
+        var conditionsToCheck = new[] { remark.IsMtdHold, remark.IsUndecided, remark.IsPending, remark.IsUnderSettle, remark.IsKeyHold };
 
-        if (conditionsToCheck.Any(item => item))
+        if (Array.Exists(conditionsToCheck, (item => item)))
         {
             throw new HoldStatusException();
         }

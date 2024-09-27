@@ -7,21 +7,12 @@ using LogServiceSentry = Fanex.Logging.LogService;
 
 namespace DirectFantasy.WorkerService;
 
-public class BasketBallFantasyWorker : BackgroundService
-{
-    private readonly DirectOSFantasyController directFantasyController;
-    private readonly IConfiguration configuration;
-    private readonly IMaintenanceService maintenanceService;
-    private int counter;
-
-    public BasketBallFantasyWorker(DirectOSFantasyController directFantasyController,
+public class BasketBallFantasyWorker(DirectOSFantasyController directFantasyController,
         IConfiguration configuration,
         IMaintenanceService maintenanceService)
-    {
-        this.directFantasyController = directFantasyController;
-        this.configuration = configuration;
-        this.maintenanceService = maintenanceService;
-    }
+    : BackgroundService
+{
+    private int counter;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
