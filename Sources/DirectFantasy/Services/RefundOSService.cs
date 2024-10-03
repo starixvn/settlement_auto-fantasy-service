@@ -1,4 +1,5 @@
-﻿using DirectFantasy.Criteria.OtherSports;
+﻿using DirectFantasy.Constants;
+using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Models;
 
 namespace DirectFantasy.Services;
@@ -11,13 +12,15 @@ public interface RefundOSService
 }
 
 public class RefundOSServiceImp(IDynamicRepository repository,
+    private readonly OSMatchService matchService;
         ScaleOutSettleService scaleOutSettleService,
         LogService logService,
         IOptions<AppSettingsKey> appSettingsKey,
-        MatchService matchService)
+        OSMatchService matchService)
     : RefundOSService
 {
     private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
+        this.matchService = matchService;
 
     public async Task InsResultRefundOS(Match match, string resourceIds)
     {
@@ -36,17 +39,24 @@ public class RefundOSServiceImp(IDynamicRepository repository,
 
         await matchService.UpdateMatchInfo(settleCriteria);
 
-        await logService.WriteLogSettle(match, settleCriteria);
+        await matchService.UpdateStatusResultOS(settleCriteria, MatchStatus.Waiting);
 
-        ExecuteAllSiteDb(settleCriteria);
+
+        await ExecuteAllSiteDb(settleCriteria);
+
+        await matchService.UpdateStatusResultOS(settleCriteria, MatchStatus.Completed);
     }
 
-    private void ExecuteAllSiteDb(SettleCriteria criteria)
+    private async Task ExecuteAllSiteDb(SettleCriteria criteria)
     {
-        foreach (var server in appSettingsKey.SiteDbServer)
-        {
-            criteria.DbServer = server;
-            repository.Execute(criteria);
-        }
+        var servers = appSettingsKey.SiteDbServer;
+        var tasks = servers.Select(server => ExecuteOneSiteDb(criteria, server));
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task ExecuteOneSiteDb(SettleCriteria criteria, string server)
+    {
+        criteria.DbServer = server;
+        await repository.ExecuteAsync(criteria);
     }
 }

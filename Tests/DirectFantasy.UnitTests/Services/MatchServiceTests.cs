@@ -39,7 +39,7 @@ public class MatchServiceTests
         // Arrange
         const string remark = "";
         const int statusId = 4;
-        var criteriaExpect = new UpdateStatusCriteria
+        var criteriaExpect = new AutoRefundResultUpdCriteria
         {
             MatchId = 1,
             TypeId = 2,
@@ -56,7 +56,7 @@ public class MatchServiceTests
         await matchService.UpdateMatchRemark(match, remark, statusId);
 
         // Assert
-        await repository.Received(1).ExecuteAsync(Arg.Is<UpdateStatusCriteria>(criteria =>
+        await repository.Received(1).ExecuteAsync(Arg.Is<AutoRefundResultUpdCriteria>(criteria =>
             criteria.MatchId == criteriaExpect.MatchId &&
             criteria.TypeId == criteriaExpect.TypeId &&
             criteria.Remark == remark &&
@@ -67,7 +67,7 @@ public class MatchServiceTests
     public async Task UpdateMatchStatus_ValidInput_CallCorrectExecuteAsync()
     {
         const int statusId = 4;
-        var criteriaExpect = new UpdateStatusCriteria
+        var criteriaExpect = new AutoRefundResultUpdCriteria
         {
             MatchId = 1,
             TypeId = 2,
@@ -80,10 +80,10 @@ public class MatchServiceTests
         };
 
         // Act
-        await matchService.UpdateMatchStatus(match, statusId);
+        await matchService.UpdateAutoRefundResult(match, statusId);
 
         // Assert
-        await repository.Received(1).ExecuteAsync(Arg.Is<UpdateStatusCriteria>(criteria =>
+        await repository.Received(1).ExecuteAsync(Arg.Is<AutoRefundResultUpdCriteria>(criteria =>
             criteria.MatchId == criteriaExpect.MatchId &&
             criteria.TypeId == criteriaExpect.TypeId &&
             criteria.StatusId == statusId));

@@ -34,11 +34,20 @@ public class CalcServiceImp(ScaleOutSettleService scaleOutService,
         await WriteLog(match);
 
         await ExecuteAllSiteDb(settleCriteria);
+
+        await UpdateAutoPayoutResult(match, Source.InfoSite, MatchStatus.Completed);
     }
 
     public async Task InsertAutoPayoutResult(Match match, int sourceId, int statusId, string remark = "")
     {
         var criteria = createCriteriaService.CreateAutoPayoutResult(match, sourceId, statusId, remark);
+
+        await repository.ExecuteAsync(criteria);
+    }
+
+    public async Task UpdateAutoPayoutResult(Match match, int sourceId, int statusId)
+    {
+        var criteria = createCriteriaService.CreateAutoPayoutResultUpdCriteria(match, sourceId, statusId);
 
         await repository.ExecuteAsync(criteria);
     }

@@ -5,7 +5,7 @@ COPY ./Sources/DirectFantasy ./DirectFantasy
 COPY ./Sources/DirectFantasy.WorkerService/DirectFantasy.WorkerService.csproj ./DirectFantasy.WorkerService/DirectFantasy.WorkerService.csproj
 
 WORKDIR /src/DirectFantasy.WorkerService
-RUN dotnet nuget add source http://nuget.nexdev.net/api/v2
+RUN dotnet nuget add source https://nuget.nexdev.net/api/v2
 RUN dotnet restore -v n
 
 COPY ./Sources/DirectFantasy.WorkerService .

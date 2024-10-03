@@ -1,5 +1,5 @@
 ﻿using DirectFantasy.Criteria;
-using DirectFantasy.Models;
+using DirectFantasy.Constants;
 
 namespace DirectFantasy.Services;
 
@@ -13,27 +13,26 @@ public interface RefundService
 public class RefundServiceImp : RefundService
 {
     private readonly IDynamicRepository repository;
-
     private readonly AppSettingsKey appSettingsKey;
-
     private readonly ScaleOutSettleService scaleOutSettleService;
-
     private readonly LogService logService;
-
     private readonly CriteriaService createCriteriaService;
+    private readonly MatchService matchService;
 
     public RefundServiceImp(
     IDynamicRepository repository,
     ScaleOutSettleService scaleOutSettleService,
     IOptions<AppSettingsKey> appSettingsKey,
     LogService logService,
-    CriteriaService createCriteriaService)
+    CriteriaService createCriteriaService,
+    MatchService matchService)
     {
         this.appSettingsKey = appSettingsKey.Value;
         this.repository = repository;
         this.scaleOutSettleService = scaleOutSettleService;
         this.logService = logService;
         this.createCriteriaService = createCriteriaService;
+        this.matchService = matchService;
     }
 
     public async Task InsertRefundResult(Match match)
@@ -54,7 +53,10 @@ public class RefundServiceImp : RefundService
 
         await WriteLog(match);
 
-        ExecuteRefundPush(match);
+        await ExecuteRefundPushAllDb(new RefundPushCriteria{MatchId = match.MatchId});
+        
+        await matchService.UpdateAutoRefundResult(match, MatchStatus.Failed);
+
     }
 
     private async Task WriteLog(Match match)
@@ -66,18 +68,17 @@ public class RefundServiceImp : RefundService
         await logService.WriteLogDirectly(match.MatchId, message);
     }
 
-    private void ExecuteRefundPush(Match match)
-    {
-        var criteria = new RefundPushCriteria
-        {
-            MatchId = match.MatchId
-        };
 
-        foreach (var server in appSettingsKey.SiteDbServer)
-        {
-            criteria.DbServer = server;
-            repository.Execute(criteria);
-        }
+    private async Task ExecuteRefundPushAllDb(RefundPushCriteria criteria)
+    {
+        var tasks = appSettingsKey.SiteDbServer.Select(server => ExecuteOneSiteDb(criteria, server));
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task ExecuteOneSiteDb(RefundPushCriteria criteria, string server)
+    {
+        criteria.DbServer = server;
+        await repository.ExecuteAsync(criteria);
     }
 
     private async Task UpdateMatchRefundInfo(Match match)

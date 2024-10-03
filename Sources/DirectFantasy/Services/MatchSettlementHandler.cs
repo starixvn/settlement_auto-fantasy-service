@@ -31,7 +31,7 @@ public class MatchSettlementHandlerImp(MatchService fantasyMatchService,
     private async Task ProgressCalc(Match match)
     {
         await HandleCalc(match);
-        fantasyMatchService.Remove(match);
+        matchService.Remove(match);
     }
 
     private async Task ProgressRefund(Match match)
@@ -46,11 +46,11 @@ public class MatchSettlementHandlerImp(MatchService fantasyMatchService,
         catch (MarkedTicketException exception)
         {
             await logService.WriteLog(match, exception.Description);
-            await fantasyMatchService.UpdateMatchStatus(match, MatchStatus.Failed);
+            await matchService.UpdateAutoRefundResult(match, MatchStatus.Failed);
         }
         finally
         {
-            fantasyMatchService.Remove(match);
+            matchService.Remove(match);
         }
     }
 

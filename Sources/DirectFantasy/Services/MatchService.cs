@@ -1,6 +1,5 @@
 ﻿using DirectFantasy.Constants;
 using DirectFantasy.Criteria;
-using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Models;
 using Fanex.Caching;
 using Environment = DirectFantasy.Constants.Environment;
@@ -15,7 +14,7 @@ public interface MatchService
 
     Task UpdateMatchRemark(Match match, string remark, int statusId);
 
-    Task UpdateMatchStatus(Match match, int statusId);
+    Task UpdateAutoRefundResult(Match match, int statusId);
 
     Task UpdateMatchInfo(SettleCriteria criteria);
 }
@@ -29,9 +28,9 @@ public class MatchServiceImp(IDynamicRepository repository, ICache cache, IOptio
 
     private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
 
-    public async Task UpdateMatchStatus(Match match, int statusId)
+    public async Task UpdateAutoRefundResult(Match match, int statusId)
     {
-        var criteria = new UpdateStatusCriteria
+        var criteria = new AutoRefundResultUpdCriteria
         {
             MatchId = match.MatchId,
             TypeId = match.TypeId,
@@ -64,7 +63,7 @@ public class MatchServiceImp(IDynamicRepository repository, ICache cache, IOptio
 
     public async Task UpdateMatchRemark(Match match, string remark, int statusId)
     {
-        var criteria = new UpdateStatusCriteria
+        var criteria = new AutoRefundResultUpdCriteria
         {
             MatchId = match.MatchId,
             TypeId = match.TypeId,

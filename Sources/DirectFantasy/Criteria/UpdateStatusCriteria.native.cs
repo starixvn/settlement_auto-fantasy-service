@@ -1,6 +1,6 @@
 ﻿namespace DirectFantasy.Criteria;
 
-public class UpdateStatusCriteria : NonQueryCommand
+public class AutoRefundResultUpdCriteria : NonQueryCommand
 {
     public int MatchId { get; set; }
 
