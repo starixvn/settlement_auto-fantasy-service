@@ -33,7 +33,7 @@ public class CalcServiceImp(ScaleOutSettleService scaleOutService,
 
         await WriteLog(match);
 
-        ExecuteAllSiteDb(settleCriteria);
+        await ExecuteAllSiteDb(settleCriteria);
     }
 
     public async Task InsertAutoPayoutResult(Match match, int sourceId, int statusId, string remark = "")
@@ -51,13 +51,16 @@ public class CalcServiceImp(ScaleOutSettleService scaleOutService,
         await scaleOutService.UpdateMatchInfo(updateMatchInfoRequest);
     }
 
-    private void ExecuteAllSiteDb(MatchSettleCriteria criteria)
+    private async Task ExecuteAllSiteDb(MatchSettleCriteria criteria)
     {
-        foreach (var server in appSettingsKey.SiteDbServer)
-        {
-            criteria.DbServer = server;
-            repository.Execute(criteria);
-        }
+        var tasks = appSettingsKey.SiteDbServer.Select(server => ExecuteOneSiteDb(criteria, server));
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task ExecuteOneSiteDb(MatchSettleCriteria criteria, string dbServer)
+    {
+        criteria.DbServer = dbServer;
+        await repository.ExecuteAsync(criteria);
     }
 
     private async Task WriteLog(Match match)

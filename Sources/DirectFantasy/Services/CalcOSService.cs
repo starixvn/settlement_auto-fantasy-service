@@ -26,15 +26,19 @@ public class CalcOSServiceImp(ScaleOutSettleService scaleOutSettleService,
         await matchOSService.UpdateStatusResultOS(settleCriteria, MatchStatus.Waiting);
         await matchService.UpdateMatchInfo(settleCriteria);
         await logService.WriteLogSettle(match, settleCriteria);
-        ExecuteAllSiteDb(settleCriteria);
+        await ExecuteAllSiteDb(settleCriteria);
+        await matchService.UpdateStatusResultOS(settleCriteria, MatchStatus.Completed);
     }
 
-    private void ExecuteAllSiteDb(SettleCriteria criteria)
+    private async Task ExecuteAllSiteDb(SettleCriteria criteria)
     {
-        foreach (var server in appSettingsKey.SiteDbServer)
-        {
-            criteria.DbServer = server;
-            repository.Execute(criteria);
-        }
+        var tasks = appSettingsKey.SiteDbServer.Select(server => ExecuteOneSiteDb(criteria, server));
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task ExecuteOneSiteDb(SettleCriteria criteria, string dbServer)
+    {
+        criteria.DbServer = dbServer;
+        await repository.ExecuteAsync(criteria);
     }
 }
