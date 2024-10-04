@@ -29,7 +29,7 @@ public class ValidationMatchServiceTests
         var settings = new AppSettingsKey()
         {
             EnvironmentName = "Local",
-            SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
+            SiteDbServer = new List<string> { "DBTXN", "DBSITE01", "DBSITE02" }
         };
         var appSettingsKey = Options.Create(settings);
 

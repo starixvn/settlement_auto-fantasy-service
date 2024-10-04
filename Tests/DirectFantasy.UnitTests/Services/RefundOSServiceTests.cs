@@ -20,7 +20,7 @@ namespace DirectFantasy.UnitTests.Services
         private readonly AppSettingsKey settings = new()
         {
             EnvironmentName = "Local",
-            SiteDbServer = new List<string> { "DBTXN", "DBSID01", "DBSID02" }
+            SiteDbServer = new List<string> { "DBTXN", "DBSITE01", "DBSITE02" }
         };
 
         public RefundOSServiceTests()

@@ -22,7 +22,7 @@ namespace DirectFantasy.UnitTests.Services
         private readonly AppSettingsKey settings = new()
         {
             EnvironmentName = "Local",
-            SiteDbServer = ["DBTXN", "DBSID01", "DBSID02"]
+            SiteDbServer = ["DBTXN", "DBSITE01", "DBSITE02"]
         };
 
         public CalcOSServiceTests()
