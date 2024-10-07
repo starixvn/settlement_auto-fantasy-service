@@ -19,10 +19,6 @@
 		<Setting Key="NAP_Set_FantasyMatchOSSel" SpName="NAP_Set_FantasyMatchOSSel" DbName="DBPRO.bodb02.wsv_nap" />
 		<Setting Key="NAP_Set_AutoPayoutResultOS_Update" SpName="NAP_Set_AutoPayoutResultOS_Update" DbName="DBPRO.bodb02.wsv_nap" />
 		<Setting Key="NAP_Set_AutoRefundOS_ResultIns" SpName="NAP_Set_AutoRefundOS_ResultIns" DbName="DBPRO.bodb02.wsv_nap" />
-		<Setting Key="NAP_Set_AutoPayout_FantasyOS_ScheduleSel" SpName="NAP_Set_AutoPayout_FantasyOS_ScheduleSel" DbName="DBPRO.bodb02.wsv_nap" />
-		<Setting Key="NAP_Set_FantasyMatchOSSel" SpName="NAP_Set_FantasyMatchOSSel" DbName="DBPRO.bodb02.wsv_nap" />
-		<Setting Key="NAP_Set_AutoPayoutResultOS_Update" SpName="NAP_Set_AutoPayoutResultOS_Update" DbName="DBPRO.bodb02.wsv_nap" />
-		<Setting Key="NAP_Set_AutoRefundOS_ResultIns" SpName="NAP_Set_AutoRefundOS_ResultIns" DbName="DBPRO.bodb02.wsv_nap" />
 	</Function>
 
 	<Function Name="Scale Out TransDb">
