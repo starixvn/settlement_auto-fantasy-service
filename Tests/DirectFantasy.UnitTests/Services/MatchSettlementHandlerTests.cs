@@ -12,6 +12,7 @@ namespace DirectFantasy.UnitTests.Services
         private readonly LogService logService;
         private readonly RefundService refundService;
         private readonly ValidationMatchService validationMatchService;
+        private readonly MatchService matchService;
 
         private readonly MatchSettlementHandler matchSettlementHandler;
 
@@ -22,8 +23,9 @@ namespace DirectFantasy.UnitTests.Services
             logService = Substitute.For<LogService>();
             refundService = Substitute.For<RefundService>();
             validationMatchService = Substitute.For<ValidationMatchService>();
+            matchService = Substitute.For<MatchService>();
 
-            matchSettlementHandler = new MatchSettlementHandlerImp(fantasyMatchService, calcService, logService, refundService, validationMatchService); // Fixed spelling of 'Calc'
+            matchSettlementHandler = new MatchSettlementHandlerImp(fantasyMatchService, calcService, logService, refundService, matchService, validationMatchService); // Fixed spelling of 'Calc'
         }
 
         [Fact]

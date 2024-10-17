@@ -13,7 +13,8 @@ namespace DirectFantasy.UnitTests.Services
         private readonly ScaleOutSettleService scaleOutSettleService;
         private readonly IDynamicRepository repository;
         private readonly LogService logService;
-        private readonly MatchService matchService;
+        private readonly OSMatchService matchService;
+
 
         private readonly RefundOSService refundOSService;
 
@@ -28,7 +29,7 @@ namespace DirectFantasy.UnitTests.Services
             scaleOutSettleService = Substitute.For<ScaleOutSettleService>();
             repository = Substitute.For<IDynamicRepository>();
             logService = Substitute.For<LogService>();
-            matchService = Substitute.For<MatchService>();
+            matchService = Substitute.For<OSMatchService>();
 
             var appSettingsKey = Options.Create(settings);
 
@@ -63,7 +64,6 @@ namespace DirectFantasy.UnitTests.Services
 
             // Assert
             await scaleOutSettleService.Received(1).UpdateUnderSettlementFlag(match.MatchId, 0, match.Action);
-            await matchService.Received(1).UpdateMatchInfo(settleCriteria);
             await logService.Received(1).WriteLogSettle(match, settleCriteria);
             repository.Received(settings.SiteDbServer.Count).Execute(Arg.Any<SettleCriteria>());
         }

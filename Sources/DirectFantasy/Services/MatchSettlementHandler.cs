@@ -14,6 +14,7 @@ public class MatchSettlementHandlerImp(MatchService fantasyMatchService,
         CalcService settleService,
         LogService logService,
         RefundService refundService,
+        MatchService matchService,
         ValidationMatchService validationMatchService)
     : MatchSettlementHandler
 {

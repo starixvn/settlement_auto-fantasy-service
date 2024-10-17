@@ -1,5 +1,6 @@
 ﻿using DirectFantasy.Constants;
 using DirectFantasy.Criteria;
+using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Models;
 using Fanex.Caching;
 using Environment = DirectFantasy.Constants.Environment;

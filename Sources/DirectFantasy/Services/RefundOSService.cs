@@ -12,7 +12,6 @@ public interface RefundOSService
 }
 
 public class RefundOSServiceImp(IDynamicRepository repository,
-    private readonly OSMatchService matchService;
         ScaleOutSettleService scaleOutSettleService,
         LogService logService,
         IOptions<AppSettingsKey> appSettingsKey,
@@ -20,7 +19,6 @@ public class RefundOSServiceImp(IDynamicRepository repository,
     : RefundOSService
 {
     private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
-        this.matchService = matchService;
 
     public async Task InsResultRefundOS(Match match, string resourceIds)
     {
@@ -37,7 +35,7 @@ public class RefundOSServiceImp(IDynamicRepository repository,
     {
         await scaleOutSettleService.UpdateUnderSettlementFlag(match.MatchId, 0, match.Action);
 
-        await matchService.UpdateMatchInfo(settleCriteria);
+        await UpdateMatchInfo(settleCriteria);
 
         await matchService.UpdateStatusResultOS(settleCriteria, MatchStatus.Waiting);
 
@@ -59,4 +57,20 @@ public class RefundOSServiceImp(IDynamicRepository repository,
         criteria.DbServer = server;
         await repository.ExecuteAsync(criteria);
     }
+
+
+    private async Task UpdateMatchInfo(SettleCriteria criteria)
+    {
+        var requestUpdateInfo = new UpdateMatchInfoRequest
+        {
+            Action = criteria.Action,
+            AdminId = criteria.AdminId,
+            MatchId = criteria.MatchId,
+            SelectedResources = criteria.SelectedResources,
+            IsAuto = criteria.IsAuto,
+        };
+
+        await scaleOutSettleService.UpdateMatchInfo(requestUpdateInfo);
+    }
+
 }
