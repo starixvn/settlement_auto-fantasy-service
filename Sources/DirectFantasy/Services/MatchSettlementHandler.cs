@@ -9,9 +9,8 @@ public interface MatchSettlementHandler
     Task Progress(Match match);
 }
 
-
 public class MatchSettlementHandlerImp(MatchService fantasyMatchService,
-        CalcService settleService,
+        CalcService calcService,
         LogService logService,
         RefundService refundService,
         MatchService matchService,
@@ -61,12 +60,12 @@ public class MatchSettlementHandlerImp(MatchService fantasyMatchService,
 
         if (validateResult.IsSuccessful)
         {
-            await settleService.Settle(match);
+            await calcService.Settle(match);
             return;
         }
 
         await logService.WriteLog(match, $"Failed Direct Payout: {validateResult.ErrMsg}");
-        await settleService.InsertAutoPayoutResult(match, Source.InfoSite, MatchStatus.Failed, validateResult.ErrMsg);
+        await calcService.InsertAutoPayoutResult(match, Source.InfoSite, MatchStatus.Failed, validateResult.ErrMsg);
     }
 
     private async Task HandleRefund(Match match)

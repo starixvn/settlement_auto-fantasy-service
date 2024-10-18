@@ -7,24 +7,13 @@ using LogServiceSentry = Fanex.Logging.LogService;
 
 namespace DirectFantasy.WorkerService;
 
-public class DirectFantasyHostedService : BackgroundService
+public class DirectFantasyHostedService(
+    DirectFantasyController directFantasyController,
+    IConfiguration configuration,
+    IMaintenanceService maintenanceService)
+    : BackgroundService
 {
-    private readonly DirectFantasyController directFantasyController;
-    private readonly IConfiguration configuration;
-    private readonly IMaintenanceService maintenanceService;
     private int counter;
-
-    public DirectFantasyHostedService(
-        DirectFantasyController directFantasyController,
-        IConfiguration configuration,
-        IMaintenanceService maintenanceService)
-    {
-        this.directFantasyController = directFantasyController;
-        this.configuration = configuration;
-        this.maintenanceService = maintenanceService;
-    }
-
-
 
     private async Task MainProcess()
     {
@@ -38,15 +27,14 @@ public class DirectFantasyHostedService : BackgroundService
         }
         catch (Exception exception)
         {
-              var logMessage = new LogMessage(exception.Message)
-                .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
-                .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
-                .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
-                .ToString();
+            var logMessage = new LogMessage(exception.Message)
+              .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
+              .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
+              .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
+              .ToString();
             await LogServiceSentry.ErrorAsync(logMessage);
         }
     }
-
 
     private void HandleGarbageCollector()
     {
@@ -66,7 +54,7 @@ public class DirectFantasyHostedService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using PeriodicTimer timer = new(TimeSpan.FromMilliseconds(configuration.GetValue<int>("ServiceInterval", 3000)));
+        using PeriodicTimer timer = new(TimeSpan.FromMilliseconds(configuration.GetValue("ServiceInterval", 3000)));
 
         while (await timer.WaitForNextTickAsync(stoppingToken))
         {

@@ -1,6 +1,5 @@
 ﻿namespace DirectFantasy.Exceptions;
 
-[Serializable]
 public class HoldStatusException : AppException
 {
     public HoldStatusException()

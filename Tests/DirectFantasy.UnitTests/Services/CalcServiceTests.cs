@@ -114,9 +114,9 @@ public class CalcServiceTests
 
         await scaleOutService.Received(1).UpdateUnderSettlementFlag(match.MatchId, 0, match.Action);
 
-        await repository.Received(1).ExecuteAsync(Arg.Any<AddAutoPayoutResultCriteria>());
+        await repository.Received(2).ExecuteAsync(Arg.Any<AddAutoPayoutResultCriteria>());
 
-        await repository.Received(1).ExecuteAsync(Arg.Any<InsertLogCriteria>());
+        await repository.Received(2).ExecuteAsync(Arg.Any<InsertLogCriteria>());
 
         await scaleOutService.Received(1).UpdateMatchInfo(Arg.Is<UpdateMatchInfoRequest>(request =>
             request.MatchId == match.MatchId &&
@@ -129,6 +129,6 @@ public class CalcServiceTests
 
         await logService.Received(1).WriteLogDirectly(Arg.Any<int>(), Arg.Any<string>());
 
-        repository.Received(3).Execute(Arg.Any<MatchSettleCriteria>());
+        await repository.Received(4).ExecuteAsync(Arg.Any<MatchSettleCriteria>());
     }
 }

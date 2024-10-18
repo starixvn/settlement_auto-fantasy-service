@@ -9,7 +9,9 @@ public interface LogService
     Task WriteLog(Match match, string message);
 
     Task WriteLogDirectly(int matchId, string message);
-    Task WriteLogResettle(InsertLogCriteria insertLogCriteria);
+
+    Task WriteLogResettle(InsertLogCriteria criteria);
+
     Task WriteLogSettle(Match match, SettleCriteria settleCriteria);
 }
 
@@ -36,7 +38,6 @@ public class LogServiceImp(IDynamicRepository repository) : LogService
     {
         await repository.ExecuteAsync(criteria);
     }
-
 
     public async Task WriteLogSettle(Match match, SettleCriteria settleCriteria)
     {

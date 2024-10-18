@@ -19,8 +19,6 @@ public class CalcServiceImp(ScaleOutSettleService scaleOutService,
         CriteriaService createCriteriaService)
     : CalcService
 {
-    private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
-
     public async Task Settle(Match match)
     {
         await scaleOutService.UpdateUnderSettlementFlag(match.MatchId, 0, match.Action);
@@ -45,7 +43,7 @@ public class CalcServiceImp(ScaleOutSettleService scaleOutService,
         await repository.ExecuteAsync(criteria);
     }
 
-    public async Task UpdateAutoPayoutResult(Match match, int sourceId, int statusId)
+    private async Task UpdateAutoPayoutResult(Match match, int sourceId, int statusId)
     {
         var criteria = createCriteriaService.CreateAutoPayoutResultUpdCriteria(match, sourceId, statusId);
 
@@ -62,7 +60,7 @@ public class CalcServiceImp(ScaleOutSettleService scaleOutService,
 
     private async Task ExecuteAllSiteDb(MatchSettleCriteria criteria)
     {
-        var tasks = appSettingsKey.SiteDbServer.Select(server => ExecuteOneSiteDb(criteria, server));
+        var tasks = appSettingsKey.Value.SiteDbServer.Select(server => ExecuteOneSiteDb(criteria, server));
         await Task.WhenAll(tasks);
     }
 
