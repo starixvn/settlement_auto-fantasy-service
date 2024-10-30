@@ -1,78 +1,39 @@
 ﻿using DirectFantasy.Services;
+using Fanex.Logging.Extensions;
+using Fanex.Logging.Extensions.Database;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using LogService = Fanex.Logging.LogService;
+using LogServiceSentry = Fanex.Logging.LogService;
 
 namespace DirectFantasy.WorkerService;
 
-public class DirectFantasyHostedService : IHostedService
+public class DirectFantasyHostedService(
+    DirectFantasyController directFantasyController,
+    IConfiguration configuration,
+    IMaintenanceService maintenanceService)
+    : BackgroundService
 {
-    private readonly DirectFantasyController directFantasyController;
-
-    private readonly IConfiguration configuration;
-
-    private readonly IMaintenanceService maintenanceService;
-
-    private bool running;
-
     private int counter;
 
-    public DirectFantasyHostedService(
-        DirectFantasyController directFantasyController,
-        IConfiguration configuration,
-        IMaintenanceService maintenanceService)
-    {
-        this.directFantasyController = directFantasyController;
-        this.configuration = configuration;
-        this.maintenanceService = maintenanceService;
-    }
-
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        running = true;
-        var autoThread = new Thread(ThreadProcess);
-        Console.WriteLine($"Auto Direct Fantasy Starting at {DateTime.Now}");
-        autoThread.Start();
-        return Task.CompletedTask;
-    }
-
-    private void ThreadProcess()
-    {
-        while (running)
-        {
-            if (maintenanceService.IsMaintenance)
-            {
-                continue;
-            }
-
-            MainProcess();
-
-            var value = configuration.GetSection("ServiceInterval").Value;
-            if (value != null)
-            {
-                Thread.Sleep(int.Parse(value));
-            }
-        }
-    }
-
-    private void MainProcess()
+    private async Task MainProcess()
     {
         try
         {
-            directFantasyController.ProcessAsync();
-            HandleGarbageCollector();
+            if (!maintenanceService.IsMaintenance)
+            {
+                await directFantasyController.ProcessAsync();
+                HandleGarbageCollector();
+            }
         }
         catch (Exception exception)
         {
-            LogService.Error("Error from Auto Direct Fantasy Service: ", exception);
+            var logMessage = new LogMessage(exception.Message)
+              .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
+              .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
+              .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
+              .ToString();
+            await LogServiceSentry.ErrorAsync(logMessage);
         }
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        Console.WriteLine("Auto Direct Fantasy Service is stopping.");
-
-        return Task.CompletedTask;
     }
 
     private void HandleGarbageCollector()
@@ -88,6 +49,16 @@ public class DirectFantasyHostedService : IHostedService
         if (interval != null)
         {
             counter += int.Parse(interval);
+        }
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        using PeriodicTimer timer = new(TimeSpan.FromMilliseconds(configuration.GetValue("ServiceInterval", 3000)));
+
+        while (await timer.WaitForNextTickAsync(stoppingToken))
+        {
+            await MainProcess();
         }
     }
 }

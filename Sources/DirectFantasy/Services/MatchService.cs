@@ -1,6 +1,5 @@
 ﻿using DirectFantasy.Constants;
 using DirectFantasy.Criteria;
-using DirectFantasy.Criteria.OtherSports;
 using DirectFantasy.Models;
 using Fanex.Caching;
 using Environment = DirectFantasy.Constants.Environment;
@@ -15,23 +14,22 @@ public interface MatchService
 
     Task UpdateMatchRemark(Match match, string remark, int statusId);
 
-    Task UpdateMatchStatus(Match match, int statusId);
-
-    Task UpdateMatchInfo(SettleCriteria criteria);
+    Task UpdateAutoRefundResult(Match match, int statusId);
 }
 
-public class MatchServiceImp(IDynamicRepository repository, ICache cache, IOptions<AppSettingsKey> appSettingsKey, ScaleOutSettleService scaleOutSettleService)
+public class MatchServiceImp(
+    IDynamicRepository repository,
+    ICache cache,
+    IOptions<AppSettingsKey> appSettingsKey)
     : MatchService
 {
     private readonly object matchesLock = new();
 
     public List<Match> PoolMatches { get; } = new();
 
-    private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
-
-    public async Task UpdateMatchStatus(Match match, int statusId)
+    public async Task UpdateAutoRefundResult(Match match, int statusId)
     {
-        var criteria = new UpdateStatusCriteria
+        var criteria = new AutoRefundResultUpdCriteria
         {
             MatchId = match.MatchId,
             TypeId = match.TypeId,
@@ -64,7 +62,7 @@ public class MatchServiceImp(IDynamicRepository repository, ICache cache, IOptio
 
     public async Task UpdateMatchRemark(Match match, string remark, int statusId)
     {
-        var criteria = new UpdateStatusCriteria
+        var criteria = new AutoRefundResultUpdCriteria
         {
             MatchId = match.MatchId,
             TypeId = match.TypeId,
@@ -82,7 +80,7 @@ public class MatchServiceImp(IDynamicRepository repository, ICache cache, IOptio
 
         var leagueIds = (response ?? "").Split(",");
 
-        return appSettingsKey.EnvironmentName switch
+        return appSettingsKey.Value.EnvironmentName switch
         {
             Environment.Pro => leagueIds.Length > 0
                 ? fantasyMatches.Where(m => !leagueIds.Contains(m.LeagueId.ToString())).ToList()
@@ -97,19 +95,5 @@ public class MatchServiceImp(IDynamicRepository repository, ICache cache, IOptio
         var criteria = new GetFantasyMatchesCriteria();
         var fantasyMatches = await repository.FetchAsync<Match>(criteria);
         return fantasyMatches;
-    }
-
-    public async Task UpdateMatchInfo(SettleCriteria criteria)
-    {
-        var requestUpdateInfo = new UpdateMatchInfoRequest
-        {
-            Action = criteria.Action,
-            AdminId = criteria.AdminId,
-            MatchId = criteria.MatchId,
-            SelectedResources = criteria.SelectedResources,
-            IsAuto = criteria.IsAuto,
-        };
-
-        await scaleOutSettleService.UpdateMatchInfo(requestUpdateInfo);
     }
 }

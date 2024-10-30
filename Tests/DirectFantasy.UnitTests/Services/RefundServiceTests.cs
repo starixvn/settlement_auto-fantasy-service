@@ -22,14 +22,15 @@ public class RefundServiceTests
         scaleOutSettleService = Substitute.For<ScaleOutSettleService>();
         logService = Substitute.For<LogService>();
         var createCriteriaService = Substitute.For<CriteriaService>();
+        var matchService = Substitute.For<MatchService>();
         var settings = new AppSettingsKey()
         {
             EnvironmentName = "Local",
-            SiteDbServer = new List<string> { "DBTXN", "DBSITE01", "DBSITE02" }
+            SiteDbServer = ["DBTXN", "DBSID01", "DBSID02"]
         };
         var appSettingsKey = Options.Create(settings);
 
-        refundService = new RefundServiceImp(repository, scaleOutSettleService, appSettingsKey, logService, createCriteriaService);
+        refundService = new RefundServiceImp(repository, scaleOutSettleService, appSettingsKey, logService, createCriteriaService, matchService);
     }
 
     [Fact]
@@ -77,6 +78,6 @@ public class RefundServiceTests
 
         await logService.Received(1).WriteLogDirectly(Arg.Is<int>(x => x == match.MatchId), Arg.Any<string>());
 
-        repository.Received(3).Execute(Arg.Any<RefundPushCriteria>());
+        await repository.Received(3).ExecuteAsync(Arg.Any<RefundPushCriteria>());
     }
 }

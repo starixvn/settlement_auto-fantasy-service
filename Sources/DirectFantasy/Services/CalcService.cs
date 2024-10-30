@@ -19,8 +19,6 @@ public class CalcServiceImp(ScaleOutSettleService scaleOutService,
         CriteriaService createCriteriaService)
     : CalcService
 {
-    private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
-
     public async Task Settle(Match match)
     {
         await scaleOutService.UpdateUnderSettlementFlag(match.MatchId, 0, match.Action);
@@ -33,12 +31,21 @@ public class CalcServiceImp(ScaleOutSettleService scaleOutService,
 
         await WriteLog(match);
 
-        ExecuteAllSiteDb(settleCriteria);
+        await ExecuteAllSiteDb(settleCriteria);
+
+        await UpdateAutoPayoutResult(match, Source.InfoSite, MatchStatus.Completed);
     }
 
     public async Task InsertAutoPayoutResult(Match match, int sourceId, int statusId, string remark = "")
     {
         var criteria = createCriteriaService.CreateAutoPayoutResult(match, sourceId, statusId, remark);
+
+        await repository.ExecuteAsync(criteria);
+    }
+
+    private async Task UpdateAutoPayoutResult(Match match, int sourceId, int statusId)
+    {
+        var criteria = createCriteriaService.CreateAutoPayoutResultUpdCriteria(match, sourceId, statusId);
 
         await repository.ExecuteAsync(criteria);
     }
@@ -51,13 +58,16 @@ public class CalcServiceImp(ScaleOutSettleService scaleOutService,
         await scaleOutService.UpdateMatchInfo(updateMatchInfoRequest);
     }
 
-    private void ExecuteAllSiteDb(MatchSettleCriteria criteria)
+    private async Task ExecuteAllSiteDb(MatchSettleCriteria criteria)
     {
-        foreach (var server in appSettingsKey.SiteDbServer)
-        {
-            criteria.DbServer = server;
-            repository.Execute(criteria);
-        }
+        var tasks = appSettingsKey.Value.SiteDbServer.Select(server => ExecuteOneSiteDb(criteria, server));
+        await Task.WhenAll(tasks);
+    }
+
+    private async Task ExecuteOneSiteDb(MatchSettleCriteria criteria, string dbServer)
+    {
+        criteria.DbServer = dbServer;
+        await repository.ExecuteAsync(criteria);
     }
 
     private async Task WriteLog(Match match)

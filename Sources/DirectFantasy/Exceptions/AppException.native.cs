@@ -19,7 +19,6 @@ public class AppException : Exception
     {
     }
 
-    [Obsolete(DiagnosticId = "SYSLIB0051")]
     protected AppException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {

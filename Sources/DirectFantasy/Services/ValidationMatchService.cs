@@ -25,8 +25,6 @@ public class ValidationMatchServiceImp(IOptions<AppSettingsKey> appSettingsKey,
         GeneralService generalService)
     : ValidationMatchService
 {
-    private readonly AppSettingsKey appSettingsKey = appSettingsKey.Value;
-
     public async Task<Result> ValidateEventTicket(Match match)
     {
         var request = new EventTicketRequest
@@ -116,7 +114,7 @@ public class ValidationMatchServiceImp(IOptions<AppSettingsKey> appSettingsKey,
         }
     }
 
-    private void ValidateHoldStatus(FantasyMatch fantasyMatch)
+    private static void ValidateHoldStatus(FantasyMatch fantasyMatch)
     {
         foreach (var item in fantasyMatch.RelatedMatches)
         {
@@ -124,7 +122,7 @@ public class ValidationMatchServiceImp(IOptions<AppSettingsKey> appSettingsKey,
         }
     }
 
-    private void VerifyHoldStatus(RemarkSettingModel remark)
+    private static void VerifyHoldStatus(RemarkSettingModel remark)
     {
         var conditionsToCheck = new[] { remark.IsMtdHold, remark.IsUndecided, remark.IsPending, remark.IsUnderSettle, remark.IsKeyHold };
 
@@ -138,7 +136,7 @@ public class ValidationMatchServiceImp(IOptions<AppSettingsKey> appSettingsKey,
     {
         var listTicketInfo = new List<MatchTicketInfo>();
 
-        foreach (var server in appSettingsKey.SiteDbServer)
+        foreach (var server in appSettingsKey.Value.SiteDbServer)
         {
             var criteria = new MatchTicketInfoCriteria
             {

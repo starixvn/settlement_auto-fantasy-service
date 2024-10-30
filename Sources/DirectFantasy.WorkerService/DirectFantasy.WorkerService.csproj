@@ -52,10 +52,8 @@
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="Fanex.Data" Version="4.3.0.2" />
-    <PackageReference Include="Fanex.Data.SqlServer" Version="4.3.0.2" />
     <!-- ReSharper disable once VulnerablePackage -->
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1.2" />
     <PackageReference Include="Fanex.Settlement.Converter" Version="1.0.0.1" />
     <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.1.1.1" />

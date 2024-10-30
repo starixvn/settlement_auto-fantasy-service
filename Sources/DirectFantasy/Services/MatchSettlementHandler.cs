@@ -9,11 +9,11 @@ public interface MatchSettlementHandler
     Task Progress(Match match);
 }
 
-
 public class MatchSettlementHandlerImp(MatchService fantasyMatchService,
-        CalcService settleService,
+        CalcService calcService,
         LogService logService,
         RefundService refundService,
+        MatchService matchService,
         ValidationMatchService validationMatchService)
     : MatchSettlementHandler
 {
@@ -31,7 +31,7 @@ public class MatchSettlementHandlerImp(MatchService fantasyMatchService,
     private async Task ProgressCalc(Match match)
     {
         await HandleCalc(match);
-        fantasyMatchService.Remove(match);
+        matchService.Remove(match);
     }
 
     private async Task ProgressRefund(Match match)
@@ -46,11 +46,11 @@ public class MatchSettlementHandlerImp(MatchService fantasyMatchService,
         catch (MarkedTicketException exception)
         {
             await logService.WriteLog(match, exception.Description);
-            await fantasyMatchService.UpdateMatchStatus(match, MatchStatus.Failed);
+            await matchService.UpdateAutoRefundResult(match, MatchStatus.Failed);
         }
         finally
         {
-            fantasyMatchService.Remove(match);
+            matchService.Remove(match);
         }
     }
 
@@ -60,12 +60,12 @@ public class MatchSettlementHandlerImp(MatchService fantasyMatchService,
 
         if (validateResult.IsSuccessful)
         {
-            await settleService.Settle(match);
+            await calcService.Settle(match);
             return;
         }
 
         await logService.WriteLog(match, $"Failed Direct Payout: {validateResult.ErrMsg}");
-        await settleService.InsertAutoPayoutResult(match, Source.InfoSite, MatchStatus.Failed, validateResult.ErrMsg);
+        await calcService.InsertAutoPayoutResult(match, Source.InfoSite, MatchStatus.Failed, validateResult.ErrMsg);
     }
 
     private async Task HandleRefund(Match match)

@@ -12,8 +12,8 @@ namespace DirectFantasy.UnitTests.Services
         private readonly LogService logService;
         private readonly RefundService refundService;
         private readonly ValidationMatchService validationMatchService;
-
-        private readonly MatchSettlementHandler matchSettlementHandler;
+        private readonly MatchService matchService;
+        private readonly MatchSettlementHandlerImp matchSettlementHandler;
 
         public MatchSettlementHandlerTests()
         {
@@ -22,15 +22,22 @@ namespace DirectFantasy.UnitTests.Services
             logService = Substitute.For<LogService>();
             refundService = Substitute.For<RefundService>();
             validationMatchService = Substitute.For<ValidationMatchService>();
+            matchService = Substitute.For<MatchService>();
 
-            matchSettlementHandler = new MatchSettlementHandlerImp(fantasyMatchService, calcService, logService, refundService, validationMatchService); // Fixed spelling of 'Calc'
+            matchSettlementHandler = new MatchSettlementHandlerImp(fantasyMatchService, calcService, logService, refundService, matchService, validationMatchService); // Fixed spelling of 'Calc'
         }
 
         [Fact]
         public async Task Progress_WhenMatchIsRefund_ShouldCallProgressRefund()
         {
             // Arrange
-            var match = new Match { Action = SettleAction.Refund };
+            var match = new Match
+            {
+                Action = SettleAction.Refund
+            };
+
+            await validationMatchService.ValidateTicketMatch(match);
+
             validationMatchService.ValidateEventTicket(match).Returns(new Result());
 
             // Act
@@ -39,7 +46,7 @@ namespace DirectFantasy.UnitTests.Services
             // Assert
             await refundService.Received(1).InsertRefundResult(match);
             await refundService.Received(1).HandleRefundPush(match);
-            fantasyMatchService.Received(1).Remove(match);
+            matchService.Received(1).Remove(match);
         }
 
         [Fact]
@@ -47,6 +54,8 @@ namespace DirectFantasy.UnitTests.Services
         {
             // Arrange
             var match = new Match { Action = string.Empty };
+
+            await validationMatchService.ValidateTicketMatch(match);
             validationMatchService.ValidateEventTicket(match).Returns(new Result());
 
             // Act
@@ -54,7 +63,7 @@ namespace DirectFantasy.UnitTests.Services
 
             // Assert
             await calcService.Received(1).Settle(match);
-            fantasyMatchService.Received(1).Remove(match);
+            matchService.Received(1).Remove(match);
         }
 
         [Fact]

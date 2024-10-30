@@ -12,6 +12,8 @@ public interface CriteriaService
 
     AddAutoPayoutResultCriteria CreateAutoPayoutResult(Match match, int sourceId, int statusId, string remark = "");
 
+    AutoPayoutResultUpdCriteria CreateAutoPayoutResultUpdCriteria(Match match, int sourceId, int statusId);
+
     InsertLogCriteria CreateLogCalcCriteria(Match match);
 
     InsertLogCriteria CreateLogRefundCriteria(Match match);
@@ -137,6 +139,18 @@ public class CriteriaServiceImp(XmlConvertService xmlConvertService) : CriteriaS
             Action = match.Action,
             SelectedResources = selectedResources,
             AutoType = match.IsRefund ? null : 2// direct
+        };
+    }
+
+    public AutoPayoutResultUpdCriteria CreateAutoPayoutResultUpdCriteria(Match match, int sourceId, int statusId)
+    {
+        
+        return new AutoPayoutResultUpdCriteria
+        {
+            MatchId = match.MatchId,
+            TypeId = match.TypeId,
+            SourceId = sourceId,
+            StatusId = statusId
         };
     }
 }

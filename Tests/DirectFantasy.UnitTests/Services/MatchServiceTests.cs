@@ -4,7 +4,6 @@ using DirectFantasy.Models;
 using DirectFantasy.Services;
 using Fanex.Caching;
 using Fanex.Data.Repository;
-using Fanex.Settlement.ScaleOut.Services;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using Environment = DirectFantasy.Constants.Environment;
@@ -15,22 +14,20 @@ public class MatchServiceTests
 {
     private readonly IDynamicRepository repository;
     private readonly ICache cache;
-    private readonly ScaleOutSettleService scaleOutSettleService;
     private MatchServiceImp matchService;
 
     public MatchServiceTests()
     {
         repository = Substitute.For<IDynamicRepository>();
         cache = Substitute.For<ICache>();
-        scaleOutSettleService = Substitute.For<ScaleOutSettleService>();
 
         var settings = new AppSettingsKey()
         {
             EnvironmentName = "Local",
-            SiteDbServer = new List<string> { "DBTXN", "DBSITE01", "DBSITE02" }
+            SiteDbServer = ["DBTXN", "DBSITE01", "DBSITE02"]
         };
         var appSettingsKey = Options.Create(settings);
-        matchService = new MatchServiceImp(repository, cache, appSettingsKey, scaleOutSettleService);
+        matchService = new MatchServiceImp(repository, cache, appSettingsKey);
     }
 
     [Fact]
@@ -39,7 +36,7 @@ public class MatchServiceTests
         // Arrange
         const string remark = "";
         const int statusId = 4;
-        var criteriaExpect = new UpdateStatusCriteria
+        var criteriaExpect = new AutoRefundResultUpdCriteria
         {
             MatchId = 1,
             TypeId = 2,
@@ -56,7 +53,7 @@ public class MatchServiceTests
         await matchService.UpdateMatchRemark(match, remark, statusId);
 
         // Assert
-        await repository.Received(1).ExecuteAsync(Arg.Is<UpdateStatusCriteria>(criteria =>
+        await repository.Received(1).ExecuteAsync(Arg.Is<AutoRefundResultUpdCriteria>(criteria =>
             criteria.MatchId == criteriaExpect.MatchId &&
             criteria.TypeId == criteriaExpect.TypeId &&
             criteria.Remark == remark &&
@@ -67,7 +64,7 @@ public class MatchServiceTests
     public async Task UpdateMatchStatus_ValidInput_CallCorrectExecuteAsync()
     {
         const int statusId = 4;
-        var criteriaExpect = new UpdateStatusCriteria
+        var criteriaExpect = new AutoRefundResultUpdCriteria
         {
             MatchId = 1,
             TypeId = 2,
@@ -80,10 +77,10 @@ public class MatchServiceTests
         };
 
         // Act
-        await matchService.UpdateMatchStatus(match, statusId);
+        await matchService.UpdateAutoRefundResult(match, statusId);
 
         // Assert
-        await repository.Received(1).ExecuteAsync(Arg.Is<UpdateStatusCriteria>(criteria =>
+        await repository.Received(1).ExecuteAsync(Arg.Is<AutoRefundResultUpdCriteria>(criteria =>
             criteria.MatchId == criteriaExpect.MatchId &&
             criteria.TypeId == criteriaExpect.TypeId &&
             criteria.StatusId == statusId));
@@ -166,10 +163,10 @@ public class MatchServiceTests
         var settings = new AppSettingsKey()
         {
             EnvironmentName = Environment.Uat,
-            SiteDbServer = new List<string> { "DBTXN" }
+            SiteDbServer = ["DBTXN"]
         };
         var appSettingsKey = Options.Create(settings);
-        matchService = new MatchServiceImp(repository, cache, appSettingsKey, scaleOutSettleService);
+        matchService = new MatchServiceImp(repository, cache, appSettingsKey);
 
         cache.TryGetAsync<string>(CacheKey.LeagueId).Returns((true, "1"));
 
@@ -204,10 +201,10 @@ public class MatchServiceTests
         var settings = new AppSettingsKey()
         {
             EnvironmentName = Environment.Pro,
-            SiteDbServer = new List<string> { "DBTXN" }
+            SiteDbServer = ["DBTXN"]
         };
         var appSettingsKey = Options.Create(settings);
-        matchService = new MatchServiceImp(repository, cache, appSettingsKey, scaleOutSettleService);
+        matchService = new MatchServiceImp(repository, cache, appSettingsKey);
         cache.TryGetAsync<string>(CacheKey.LeagueId).Returns((true, "1"));
 
         // Act
