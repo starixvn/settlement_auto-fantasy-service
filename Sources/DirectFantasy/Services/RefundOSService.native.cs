@@ -14,7 +14,8 @@ public interface RefundOSService
 public class RefundOSServiceImp(IDynamicRepository repository,
         ScaleOutSettleService scaleOutSettleService,
         IOptions<AppSettingsKey> appSettingsKey,
-        OSMatchService matchService)
+        OSMatchService matchService,
+        LogService logService)
     : RefundOSService
 {
     public async Task InsResultRefundOS(Match match, string resourceIds)
@@ -35,12 +36,13 @@ public class RefundOSServiceImp(IDynamicRepository repository,
         await UpdateMatchInfo(settleCriteria);
 
         await matchService.UpdateStatusResultOS(settleCriteria, MatchStatus.Waiting);
-
+        
+        await logService.WriteLogSettle(match, settleCriteria);
+        
         await ExecuteAllSiteDb(settleCriteria);
 
         await matchService.UpdateStatusResultOS(settleCriteria, MatchStatus.Completed);
     }
-
     private async Task ExecuteAllSiteDb(SettleCriteria criteria)
     {
         var servers = appSettingsKey.Value.SiteDbServer;

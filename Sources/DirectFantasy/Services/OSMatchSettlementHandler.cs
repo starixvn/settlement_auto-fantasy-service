@@ -19,8 +19,12 @@ public class OSMatchSettlementHandlerImp(OSMatchService matchService,
         ResultDetailService resultDetailService)
     : OSMatchSettlementHandler
 {
+
+    private const int Basketball = 2;
     public async Task Progress(Match match)
     {
+        match.SportType = Basketball;
+
         if (match.IsRefund)
         {
             await ProgressRefund(match);
