@@ -34,7 +34,7 @@ public static class Environment
 public static class MatchStatus
 {
     public const int Waiting = 1;
-    public const int  Completed = 2;
+    public const int Completed = 2;
     public const int Failed = 3;
 }
 
@@ -63,5 +63,6 @@ public static class SpName
 
 public static class EventStatus
 {
+    public const string Running = "running";
     public const string Completed = "completed";
 }

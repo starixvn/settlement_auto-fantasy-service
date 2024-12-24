@@ -84,7 +84,7 @@ public class ValidationMatchServiceImp(IOptions<AppSettingsKey> appSettingsKey,
         ValidateCalculatedMatch(match);
     }
 
-    private void ValidateCalculatedMatch(FantasyMatch fantasyMatch)
+    private static void ValidateCalculatedMatch(FantasyMatch fantasyMatch)
     {
         foreach (var item in fantasyMatch.RelatedMatches)
         {
@@ -95,7 +95,7 @@ public class ValidationMatchServiceImp(IOptions<AppSettingsKey> appSettingsKey,
         }
     }
 
-    private void ValidateInsufficient(FantasyMatch fantasyMatch)
+    private static void ValidateInsufficient(FantasyMatch fantasyMatch)
     {
         var homeTeamIds = fantasyMatch.FantasyMatchDetail.FantasyHomeTeam.Split(",");
         var awayTeamIds = fantasyMatch.FantasyMatchDetail.FantasyAwayTeam.Split(",");

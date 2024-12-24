@@ -9,7 +9,6 @@ public static class DependenceInjections
     {
         service.AddSingleton<IDynamicRepository, DynamicRepository>();
         service.AddTransient<LogService, LogServiceImp>();
-        service.AddTransient<Services.IMaintenanceService, MaintenanceServiceImp>();
         service.AddSingleton<ScaleOutSettleService, ScaleOutSettleServiceImp>();
         service.AddTransient<GeneralService, GeneralServiceImp>();
         service.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

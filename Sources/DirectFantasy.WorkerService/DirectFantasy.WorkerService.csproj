@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="appsettings.DEV.json" />
     <None Remove="appsettings.Development.json" />
@@ -18,7 +16,6 @@
     <None Remove="appsettings.UAT.json" />
     <None Remove="App_Data\SpName.xml" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="appsettings.KLDR.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -48,20 +45,16 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-	</ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
   <ItemGroup>
     <!-- ReSharper disable once VulnerablePackage -->
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="1.0.1.2" />
+    <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="2.0.2" />
     <PackageReference Include="Fanex.Settlement.Converter" Version="1.0.0.1" />
-    <PackageReference Include="ONEbook.UM.AspNetCore" Version="3.1.1.1" />
-    <PackageReference Include="ONEbook.UM.Transport" Version="3.1.2" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\DirectFantasy\DirectFantasy.csproj" />
   </ItemGroup>
-
 </Project>

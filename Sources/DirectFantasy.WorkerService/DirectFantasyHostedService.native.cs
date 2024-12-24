@@ -3,6 +3,7 @@ using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.Database;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using ONEbook.UM.Services;
 using LogServiceSentry = Fanex.Logging.LogService;
 
 namespace DirectFantasy.WorkerService;
@@ -19,7 +20,8 @@ public class DirectFantasyHostedService(
     {
         try
         {
-            if (!maintenanceService.IsMaintenance)
+            var isMaintenance = await maintenanceService.IsUnderMaintenanceAsync();
+            if (!isMaintenance)
             {
                 await directFantasyController.ProcessAsync();
                 HandleGarbageCollector();
