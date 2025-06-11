@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -12,7 +12,7 @@
     <None Remove="appsettings.KLDR.json" />
     <None Remove="appsettings.LOCAL.json" />
     <None Remove="appsettings.PROD.json" />
-<None Remove="appsettings.KLPROD.json" />
+	<None Remove="appsettings.KLPROD.json" />
     <None Remove="appsettings.SIT.json" />
     <None Remove="appsettings.UAT.json" />
     <None Remove="App_Data\SpName.xml" />
@@ -36,7 +36,7 @@
     <Content Include="appsettings.PROD.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-<Content Include="appsettings.KLPROD.json">
+	<Content Include="appsettings.KLPROD.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="appsettings.SIT.json">
@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- ReSharper disable once VulnerablePackage -->
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="2.0.2" />
     <PackageReference Include="Fanex.Settlement.Converter" Version="1.0.0.1" />
   </ItemGroup>
