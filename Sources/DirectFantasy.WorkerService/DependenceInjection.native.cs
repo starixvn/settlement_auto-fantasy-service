@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DirectFantasy.WorkerService.Profiles;
+﻿using DirectFantasy.WorkerService.Profiles;
 using Fanex.Caching;
 using Fanex.Caching.Redis;
 using Fanex.Settlement.ScaleOut;
@@ -31,15 +30,11 @@ namespace DirectFantasy.WorkerService
 
         private static void AddAutoMapperConfig(this IServiceCollection service)
         {
-            var mapperConfig = new MapperConfiguration(mc =>
+            service.AddAutoMapper(mc =>
             {
-                mc.AddProfile(typeof(AutoMapperProfile));
-                mc.AddProfile(typeof(ScaleOutMappingProfile));
+                mc.AddProfile<AutoMapperProfile>();
+                mc.AddProfile<ScaleOutMappingProfile>();
             });
-
-            var mapper = mapperConfig.CreateMapper();
-
-            service.AddSingleton(mapper);
         }
     }
 }

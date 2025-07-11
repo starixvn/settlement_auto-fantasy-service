@@ -4,27 +4,24 @@ using DirectFantasy.WorkerService;
 using Fanex.Data.SqlServer;
 using Fanex.Logging.Sentry.RavenClient;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using ONEbook.UM.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 
-builder.Services.AddOneBookUmForService(builder.Configuration);
-builder.Services.AddFanexLogSentry(builder.Configuration);
-builder.Services.AddFanexSql(builder.Configuration);
-builder.Services.Configure<AppSettingsKey>(builder.Configuration);
-builder.Services.AddDirectFantasyServices();
-builder.Services.AutoPayoutConfigServices(builder.Configuration);
+services.AddOneBookUmForService(builder.Configuration);
+services.AddFanexLogSentry(builder.Configuration);
+services.AddFanexSql(builder.Configuration);
+services.Configure<AppSettingsKey>(builder.Configuration);
+services.AddDirectFantasyServices();
+services.AutoPayoutConfigServices(builder.Configuration);
 
-builder.Services.AddHostedService<DirectFantasyHostedService>();
-builder.Services.AddHostedService<BasketBallFantasyWorker>();
+services.AddHostedService<DirectFantasyHostedService>();
+services.AddHostedService<BasketBallFantasyWorker>();
+services.AddHealthChecks();
 
 var app = builder.Build();
-
-app.Run(async context =>
-{
-    await context.Response.WriteAsync("OK");
-});
+app.MapHealthChecks("/healthz");
 
 await app.RunAsync();

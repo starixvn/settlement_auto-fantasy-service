@@ -55,6 +55,7 @@
   <ItemGroup>
     <!-- ReSharper disable once VulnerablePackage -->
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Fanex.Caching.Redis" Version="2.2.8" />
     <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="2.0.2" />
     <PackageReference Include="Fanex.Settlement.Converter" Version="1.0.0.1" />
   </ItemGroup>
